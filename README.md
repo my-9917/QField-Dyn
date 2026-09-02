@@ -2,7 +2,7 @@
 
 QField-Dyn（Quantum-Information-Enhanced Field Dynamics）根据 `GOAI_eval_public` 中每个体系的观测轨迹生成 T1–T4 未来轨迹。蛋白坐标始终固定，模型只预测配体运动；输出为包含完整体系原子、单位为 nm 的 XTC 文件。
 
-正式封装时，目录名和输出目录中的 `xxxxxm429` 使用比赛平台显示的队伍 ID。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`；正式提交引用评审可访问的固定 release、tag 或 commit。
+本包使用比赛平台队伍 ID `xxxxxm429`。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`，正式版本固定为 `goai-finals-2026-r1` tag。
 
 ## 1. 环境安装
 
@@ -94,13 +94,13 @@ CUBLAS_WORKSPACE_CONFIG=:4096:8 .venv/bin/python -m tools.verify \
 
 ## 9. 训练数据、训练代码与外部资源
 
-监督训练只使用赛事规定的 MISATO competition-train 13,066 个复合物及其训练侧量子化学信息。competition-validation 只用于模型选择和本地结果报告；不使用 competition-test、独立核验体系未来轨迹或评测体系量子标签。训练代码位于 `training/`，训练依赖位于 `requirements-training.txt`。
+监督训练只使用赛事规定的 MISATO competition-train 13,066 个复合物及其训练侧量子化学信息。train/validation ID 列表直接采用赛事基于 MISATO 原始 MD 划分并剔除 NeuralMD `peptides.txt` 多肽条目后的口径；本项目未重新引入列表外多肽体系。competition-validation 只用于模型选择和本地结果报告；不使用 competition-test、独立核验体系未来轨迹或评测体系量子标签。训练代码位于 `training/`，训练依赖位于 `requirements-training.txt`。
 
 MISATO 数据：Zenodo record 7711953，version 1.0.0，DOI `10.5281/zenodo.7711953`。MISATO GitHub 源码仓库标注 LGPL-2.1；Zenodo 数据记录的 Rights/License 字段未显示具体许可证，数据使用与再分发遵循 Zenodo 记录及赛事要求。本项目未使用外部势函数、外部基础模型或 MISATO 以外的外部 MD 数据。
 
 项目仓库：`https://github.com/my-9917/QField-Dyn`  
 源码许可证：`Apache-2.0`  
-固定版本：`goai-finals-2026` tag
+固定版本：`goai-finals-2026-r1` tag
 
 ## 10. 已知限制与常见问题
 
