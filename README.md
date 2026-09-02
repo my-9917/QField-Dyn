@@ -2,7 +2,7 @@
 
 QField-Dyn（Quantum-Information-Enhanced Field Dynamics）根据 `GOAI_eval_public` 中每个体系的观测轨迹生成 T1–T4 未来轨迹。蛋白坐标始终固定，模型只预测配体运动；输出为包含完整体系原子、单位为 nm 的 XTC 文件。
 
-本包使用比赛平台队伍 ID `xxxxxm429`。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`，正式版本固定为 `goai-finals-2026-r1` tag。
+本包使用比赛平台队伍 ID `xxxxxm429`。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`，正式版本固定为 `goai-finals-2026-r2` tag。
 
 ## 1. 环境安装
 
@@ -74,7 +74,17 @@ GOAI_pred_xxxxxm429/
 
 验证摘要写入根目录 `reproduction_verification.json`。输出 XTC 只包含未来 `n_pred` 帧，原子数、顺序、时间与盒信息遵循评测包定义。
 
-## 7. 运行检查与单体系测试
+## 7. 可选网页入口
+
+`web/` 提供单文件原生 HTML/CSS/JS 界面和 Python 标准库后端。它复用同一冻结权重和 `tools.predict_public` 推理链，接收仅含观测帧的协议兼容 ZIP，并返回未来 XTC 压缩包：
+
+```bash
+bash web/run_web.sh
+```
+
+默认访问地址为 `http://127.0.0.1:8765`。该入口用于交互演示，不替代组委会规定的无参数 `bash run.sh` 复现入口；公网部署需要持续 GPU 服务与 HTTPS 反向代理。
+
+## 8. 运行检查与单体系测试
 
 `run.sh` 在推理前检查 Python 环境、CUDA、评测输入和 13 项模型产物；推理后检查 95 条文件的档次、命名、帧数、原子数、有限坐标、时间、盒子以及非配体原子固定性。
 
@@ -88,11 +98,11 @@ CUBLAS_WORKSPACE_CONFIG=:4096:8 .venv/bin/python -m tools.verify \
   --device cuda
 ```
 
-## 8. 硬件与耗时
+## 9. 硬件与耗时
 
 远程 NVIDIA A800 全量实测 123.10 秒生成并核对 95 个体系，折合平均约 1.30 秒/体系；该平均值包含批处理与全量核对开销，不是独立单体系基准。进程峰值内存约 1.54 GB，PyTorch 峰值分配/保留显存约 39.0/52.4 MB；建议至少提供 1 个 CPU 核、4 GB 可用内存和 2 GB 可用显存。该建议不是多型号硬件上测得的最低边界。
 
-## 9. 训练数据、训练代码与外部资源
+## 10. 训练数据、训练代码与外部资源
 
 监督训练只使用赛事规定的 MISATO competition-train 13,066 个复合物及其训练侧量子化学信息。train/validation ID 列表直接采用赛事基于 MISATO 原始 MD 划分并剔除 NeuralMD `peptides.txt` 多肽条目后的口径；本项目未重新引入列表外多肽体系。competition-validation 只用于模型选择和本地结果报告；不使用 competition-test、独立核验体系未来轨迹或评测体系量子标签。训练代码位于 `training/`，训练依赖位于 `requirements-training.txt`。
 
@@ -100,9 +110,9 @@ MISATO 数据：Zenodo record 7711953，version 1.0.0，DOI `10.5281/zenodo.7711
 
 项目仓库：`https://github.com/my-9917/QField-Dyn`  
 源码许可证：`Apache-2.0`  
-固定版本：`goai-finals-2026-r1` tag
+固定版本：`goai-finals-2026-r2` tag
 
-## 10. 已知限制与常见问题
+## 11. 已知限制与常见问题
 
 - 公开 T4 不含未来真值。当前结果只能证明输出格式有效、明确物理错误消失且观测统计未明显退化，不能证明未知未来上的 Geo、Dyn、Stab 或总分一定提高。
 - 0.4 Å 是极端固定环境重叠的局部触发阈值，不是官方 Phys 评分公式。

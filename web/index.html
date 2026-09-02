@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QField-Dyn — Trajectory Forecast</title>
+<style>
+  :root {
+    --bg:#0d1117; --panel:#161b22; --line:#30363d; --fg:#c9d1d9;
+    --dim:#8b949e; --ok:#3fb950; --bad:#f85149; --hi:#58a6ff;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; }
+  code, .mono { font-family:ui-monospace,Menlo,Consolas,monospace; }
+  header { padding:20px 28px; border-bottom:1px solid var(--line); display:flex; align-items:baseline; gap:14px; }
+  header h1 { font-size:19px; margin:0; color:#f0f6fc; }
+  header span { color:var(--dim); font-size:12.5px; }
+  main { display:grid; grid-template-columns:360px 1fr; gap:18px; padding:22px 28px; max-width:1280px; margin:0 auto; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px; }
+  .panel h2 { font-size:13px; margin:0 0 12px; color:var(--dim); text-transform:uppercase; letter-spacing:.06em; }
+  .run-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  label { display:block; margin:12px 0 4px; color:var(--dim); font-size:12.5px; }
+  input, select { width:100%; background:var(--bg); color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:8px 10px; font:inherit; }
+  .upload { display:flex; min-height:116px; border:1px dashed var(--hi); border-radius:6px; align-items:center; justify-content:center; text-align:center; color:var(--hi); cursor:pointer; padding:16px; }
+  .upload:hover, .upload.drag { background:#111b2d; border-color:#79c0ff; }
+  .upload input { display:none; }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+  .chip { width:auto; margin:0; padding:3px 9px; background:#21262d; color:var(--hi); border:1px solid var(--line); border-radius:999px; font-size:12px; font-weight:600; }
+  .chip:hover { border-color:var(--hi); }
+  button { width:100%; margin-top:16px; background:#238636; color:#fff; border:1px solid #2ea043; border-radius:6px; padding:10px; font-size:15px; font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.45; cursor:default; }
+  .secondary { width:auto; margin:0; padding:4px 10px; background:#21262d; border-color:var(--line); color:var(--hi); font-size:12px; }
+  .meta { margin-top:14px; padding-top:12px; border-top:1px solid var(--line); display:grid; grid-template-columns:1fr auto; gap:5px 12px; font-size:12.5px; }
+  .meta span:nth-child(odd) { color:var(--dim); }
+  .footnote { color:var(--dim); font-size:11.5px; margin-top:6px; }
+  .status-line { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); } .run { color:var(--hi); }
+  .progress { height:7px; background:var(--bg); border:1px solid var(--line); border-radius:999px; overflow:hidden; margin:10px 0 16px; }
+  .progress > span { display:block; width:0; height:100%; background:var(--hi); transition:width .25s ease; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { text-align:left; padding:5px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--dim); font-weight:500; }
+  pre { margin:0; min-height:214px; background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:12px; white-space:pre-wrap; color:var(--fg); font:12px/1.55 ui-monospace,Menlo,Consolas,monospace; }
+  .download { display:none; width:100%; margin-top:12px; text-align:center; text-decoration:none; background:#238636; color:#fff; border:1px solid #2ea043; border-radius:6px; padding:9px; font-weight:600; }
+  .boundary { grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; }
+  .boundary strong { display:block; color:#f0f6fc; margin-bottom:5px; }
+  .boundary div { border-left:2px solid var(--line); padding-left:12px; color:var(--dim); }
+  .boundary div:first-child { border-color:var(--hi); }
+  @media (max-width:900px) {
+    main { grid-template-columns:1fr; padding:16px; }
+    .run-grid, .boundary { grid-template-columns:1fr; }
+    .boundary { grid-column:auto; }
+    header { padding:16px; display:block; }
+    header span { display:block; margin-top:3px; }
+  }
+</style>
+</head>
+<body>
+<header><h1>QField-Dyn</h1><span>Protocol-compatible protein–ligand future trajectory inference</span></header>
+<main>
+  <section class="panel">
+    <h2>Prediction request</h2>
+    <label for="dataset">Dataset ZIP</label>
+    <label class="upload" id="dropZone" for="dataset">
+      <span id="uploadText">Choose or drop one protocol-compatible ZIP<br><small>Observed frames only · PDB + XTC + meta.json</small></span>
+      <input id="dataset" type="file" accept=".zip,application/zip">
+    </label>
+
+    <label for="tier">Prediction specification</label>
+    <select id="tier">
+      <option value="T1">T1 · 10 observed → 10 predicted</option>
+      <option value="T2">T2 · 80 observed → 20 predicted</option>
+      <option value="T3">T3 · 20 observed → 80 predicted</option>
+      <option value="T4">T4 · 10 observed → 490 predicted</option>
+    </select>
+    <div class="chips" aria-label="Quick specification selection">
+      <button class="chip" type="button" data-tier="T1">T1 local</button>
+      <button class="chip" type="button" data-tier="T2">T2 history</button>
+      <button class="chip" type="button" data-tier="T3">T3 rollout</button>
+      <button class="chip" type="button" data-tier="T4">T4 long range</button>
+    </div>
+    <div class="meta" id="specMeta"></div>
+    <button id="runButton" type="button" disabled>Run prediction</button>
+    <div class="footnote">The service reads only the uploaded topology and observed trajectory. It does not retrieve future frames or identify anonymized systems.</div>
+  </section>
+
+  <section class="panel">
+    <h2>Run</h2>
+    <div class="status-line"><span>Status: <strong id="status" class="run">Ready</strong></span><span class="mono" id="jobId">—</span></div>
+    <div class="progress" aria-label="Prediction progress"><span id="progressBar"></span></div>
+    <div class="run-grid">
+      <div>
+        <table>
+          <tbody>
+            <tr><th>File</th><td id="fileCell">—</td></tr>
+            <tr><th>Tier</th><td id="tierCell">T1</td></tr>
+            <tr><th>Systems</th><td id="systemsCell">—</td></tr>
+            <tr><th>Device</th><td id="deviceCell">NVIDIA GPU</td></tr>
+            <tr><th>Output</th><td id="outputCell">Future frames only</td></tr>
+          </tbody>
+        </table>
+        <a class="download" id="download" href="#">⬇ Download prediction ZIP</a>
+      </div>
+      <div>
+        <pre id="log">Upload a compatible ZIP and select a prediction specification.</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel boundary">
+    <div><strong>Supported input</strong>Fixed-protein, ligand-motion trajectories with the QField-Dyn package structure and atom ordering.</div>
+    <div><strong>Generated output</strong>Full-system XTC files in nm; protein and environment coordinates remain fixed while ligand coordinates are forecast.</div>
+    <div><strong>Current boundary</strong>General protein–ligand use requires the same topology conventions and one of the four published temporal specifications.</div>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const specs = {
+  T1:{obs:10,pred:10,dt:'80 ps',focus:'Local dynamics'},
+  T2:{obs:80,pred:20,dt:'80 ps',focus:'History-conditioned forecast'},
+  T3:{obs:20,pred:80,dt:'80 ps',focus:'Long rollout'},
+  T4:{obs:10,pred:490,dt:'1,000 ps',focus:'Long-range stability'}
+};
+let selectedFile = null;
+let requestSeq = 0;
+
+function renderSpec() {
+  const tier = $('tier').value;
+  const s = specs[tier];
+  $('specMeta').innerHTML = [
+    ['Observed frames', s.obs], ['Predicted frames', s.pred],
+    ['Frame interval', s.dt], ['Primary focus', s.focus]
+  ].map(([k,v]) => `<span>${esc(k)}</span><strong>${esc(v)}</strong>`).join('');
+  $('tierCell').innerHTML = esc(tier);
+}
+
+function chooseFile(file) {
+  selectedFile = file || null;
+  $('runButton').disabled = !selectedFile;
+  $('fileCell').innerHTML = selectedFile ? esc(selectedFile.name) : '—';
+  $('uploadText').innerHTML = selectedFile
+    ? `${esc(selectedFile.name)}<br><small>${esc((selectedFile.size / 1048576).toFixed(2))} MiB</small>`
+    : 'Choose or drop one protocol-compatible ZIP<br><small>Observed frames only · PDB + XTC + meta.json</small>';
+}
+
+function setState(label, css, progress, message) {
+  $('status').className = css;
+  $('status').innerHTML = esc(label);
+  $('progressBar').style.width = `${Math.max(0, Math.min(100, Number(progress) || 0))}%`;
+  $('log').innerHTML = esc(message);
+}
+
+async function pollJob(jobId, seq) {
+  let transientFailures = 0;
+  while (seq === requestSeq) {
+    try {
+      const response = await fetch(`/api/jobs/${encodeURIComponent(jobId)}`, {cache:'no-store'});
+      if (!response.ok) throw new Error(`Status request failed (${response.status})`);
+      const job = await response.json();
+      transientFailures = 0;
+      $('systemsCell').innerHTML = esc(job.systems ?? '—');
+      setState(job.label, job.state === 'failed' ? 'bad' : job.state === 'completed' ? 'ok' : 'run', job.progress, job.message);
+      if (job.state === 'completed') {
+        $('download').href = job.download_url;
+        $('download').style.display = 'block';
+        $('runButton').disabled = false;
+        return;
+      }
+      if (job.state === 'failed') {
+        $('runButton').disabled = false;
+        return;
+      }
+    } catch (error) {
+      transientFailures += 1;
+      if (transientFailures >= 3) {
+        setState('Connection error', 'bad', 0, error.message);
+        $('runButton').disabled = false;
+        return;
+      }
+    }
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+}
+
+async function submitJob() {
+  if (!selectedFile) return;
+  const seq = ++requestSeq;
+  $('runButton').disabled = true;
+  $('download').style.display = 'none';
+  $('jobId').innerHTML = '—';
+  $('systemsCell').innerHTML = '—';
+  setState('Uploading', 'run', 3, 'Uploading observed trajectory package…');
+  const body = new FormData();
+  body.append('tier', $('tier').value);
+  body.append('dataset', selectedFile, selectedFile.name);
+  try {
+    const response = await fetch('/api/jobs', {method:'POST', body});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
+    if (seq !== requestSeq) return;
+    $('jobId').innerHTML = esc(data.job_id);
+    await pollJob(data.job_id, seq);
+  } catch (error) {
+    if (seq !== requestSeq) return;
+    setState('Request failed', 'bad', 0, error.message);
+    $('runButton').disabled = false;
+  }
+}
+
+$('tier').addEventListener('change', renderSpec);
+$('dataset').addEventListener('change', event => chooseFile(event.target.files[0]));
+$('runButton').addEventListener('click', submitJob);
+document.querySelectorAll('[data-tier]').forEach(button => button.addEventListener('click', () => {
+  $('tier').value = button.dataset.tier;
+  renderSpec();
+}));
+const dropZone = $('dropZone');
+['dragenter','dragover'].forEach(name => dropZone.addEventListener(name, event => { event.preventDefault(); dropZone.classList.add('drag'); }));
+['dragleave','drop'].forEach(name => dropZone.addEventListener(name, event => { event.preventDefault(); dropZone.classList.remove('drag'); }));
+dropZone.addEventListener('drop', event => chooseFile(event.dataTransfer.files[0]));
+renderSpec();
+</script>
+</body>
+</html>
