@@ -1,0 +1,9 @@
+{
+  "max_rms_displacement": 0.9950557351,
+  "position_correlation": 0.1813983,
+  "translation_log_intercept": 0.202531744,
+  "translation_log_slope": 0.980515924,
+  "rotation_log_intercept": 0.0869851671960921,
+  "rotation_log_slope": 0.853760248652735,
+  "seed": 20260816
+}

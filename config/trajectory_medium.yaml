@@ -1,0 +1,54 @@
+task: T2
+seed: 20260825
+
+data:
+  md: data/MD.hdf5
+  manifest: reproduced_data/manifest.csv
+  internal_split: reproduced_data/expert_split.csv
+  train_graph_cache: reproduced_data/graph_train.hdf5
+  train_ligand_coordinates: reproduced_data/coordinates_train.hdf5
+  train_quantum_features: reproduced_data/quantum_features_train.hdf5
+
+initialization:
+  checkpoint: reproduced_artifacts/trajectory_model.pt
+
+graph:
+  cross_cutoff_angstrom: 6.0
+
+model:
+  hidden_dim: 128
+  layer_count: 3
+  quantum_feature_dim: 132
+
+loss:
+  contact_temperature: 0.25
+  weights:
+    coordinate: 1.0
+    bond: 10.0
+    angle: 25.0
+    rmsf: 0.0220
+    speed_w1: 0.1444
+    contact_w1: 0.0494
+    contact_transition: 0.7997
+    velocity_correlation: 0.1143
+    radius_of_gyration: 0.0401
+
+training:
+  rollout_steps: 20
+  micro_batch_size: 4
+  gradient_accumulation_steps: 8
+  validation_batch_size: 4
+  learning_rate: 0.00005
+  weight_decay: 0.000001
+  gradient_clip_norm: 1.0
+  max_epochs: 5
+  early_stopping_patience: 2
+  max_wall_hours: 6
+  num_workers: 0
+
+validation:
+  current_frame_index: 79
+
+outputs:
+  checkpoint: reproduced_artifacts/trajectory_model_t2.pt
+  log: reproduced_results/trajectory_medium.csv

@@ -1,0 +1,2 @@
+model,task,system_count,phys_bond_abs_error,phys_bond_violation_fraction,phys_bond_break_fraction,phys_angle_abs_error_deg,phys_angle_violation_fraction,phys_internal_clash_frame_ratio,phys_protein_clash_frame_ratio,phys_invalid_frame_ratio
+history-reference,T2,1357,0.035559087435117126,0.0016487524152120569,0.0,3.017034910361206,0.0001610953678393642,0.006116433308769344,0.690972733971997,0.7142593957258658

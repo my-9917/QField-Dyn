@@ -1,0 +1,11 @@
+.venv
+GOAI_eval_public
+GOAI_pred_*/
+reproduction_verification.json
+data/
+reproduced_data/
+reproduced_results/
+reproduced_artifacts/
+examples/
+__pycache__/
+*.pyc

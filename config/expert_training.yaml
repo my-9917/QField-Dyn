@@ -1,0 +1,29 @@
+seed: 20260815
+
+data:
+  q_cache: reproduced_data/expert_inputs.hdf5
+  context_cache: reproduced_data/expert_inputs.hdf5
+  ligand_coordinates: reproduced_data/coordinates_train.hdf5
+  graph_cache: reproduced_data/graph_train.hdf5
+  internal_split: reproduced_data/expert_split.csv
+
+model:
+  context_dim: 1033
+  hidden_dim: 128
+
+loss:
+  coordinate_weight: 1.0
+  bond_weight: 10.0
+  velocity_weight: 1.0
+
+training:
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 0.000001
+  max_epochs: 30
+  early_stopping_patience: 5
+  num_workers: 0
+
+outputs:
+  checkpoint: reproduced_artifacts/expert_gate.pt
+  log: reproduced_results/expert_training.csv

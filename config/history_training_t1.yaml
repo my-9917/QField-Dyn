@@ -1,0 +1,48 @@
+task: T1
+seed: 20260825
+
+data:
+  manifest: reproduced_data/manifest.csv
+  internal_split: reproduced_data/expert_split.csv
+  graph_cache: reproduced_data/graph_train.hdf5
+  coordinate_cache: reproduced_data/coordinates_train.hdf5
+  quantum_cache: reproduced_data/quantum_features_train.hdf5
+
+initialization:
+  checkpoint: reproduced_artifacts/trajectory_model_t1.pt
+
+graph:
+  cross_cutoff_angstrom: 6.0
+
+model:
+  hidden_dim: 128
+  layer_count: 3
+  quantum_feature_dim: 132
+
+loss:
+  contact_temperature: 0.25
+  weights:
+    coordinate: 1.0
+    velocity_vector: 1.2467554149351112
+    bond: 10.0
+    angle: 25.0
+    atom_rmsf: 0.061896699949670675
+    speed_w1: 0.0979
+    contact_w1: 0.122
+    contact_transition: 1.0185
+    multi_lag_velocity_correlation: 0.02763174498030691
+    radius_of_gyration: 0.2567
+
+training:
+  gradient_accumulation_steps: 32
+  learning_rate: 0.00001
+  weight_decay: 0.000001
+  gradient_clip_norm: 1.0
+  max_epochs: 3
+  early_stopping_patience: 2
+  max_wall_hours: 4
+  num_workers: 0
+
+outputs:
+  checkpoint_directory: reproduced_artifacts/history_t1
+  log: reproduced_results/history_training_t1.csv

@@ -1,0 +1,44 @@
+seed: 20260814
+
+data:
+  md: data/MD.hdf5
+  manifest: reproduced_data/manifest.csv
+  train_graph_cache: reproduced_data/graph_train.hdf5
+  validation_graph_cache: reproduced_data/graph_validation.hdf5
+  train_ligand_coordinates: reproduced_data/coordinates_train.hdf5
+  validation_ligand_coordinates: reproduced_data/coordinates_validation.hdf5
+
+initialization:
+  checkpoint: reproduced_artifacts/base_initialization.pt
+
+graph:
+  cross_cutoff_angstrom: 6.0
+
+model:
+  hidden_dim: 128
+  layer_count: 3
+
+loss:
+  coordinate_weight: 1.0
+  bond_weight: 10.0
+  angle_weight: 25.0
+
+training:
+  micro_batch_size: 32
+  gradient_accumulation_steps: 2
+  validation_batch_size: 64
+  rollout_steps: 8
+  learning_rate: 0.0002
+  weight_decay: 0.000001
+  gradient_clip_norm: 1.0
+  max_epochs: 10
+  early_stopping_patience: 3
+  max_wall_hours: 4
+  num_workers: 0
+
+validation:
+  current_frame_index: 9
+
+outputs:
+  checkpoint: reproduced_artifacts/base_trajectory_model.pt
+  log: reproduced_results/base_training.csv

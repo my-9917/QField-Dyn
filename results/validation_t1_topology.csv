@@ -1,0 +1,2 @@
+model,task,system_count,phys_bond_abs_error,phys_bond_violation_fraction,phys_bond_break_fraction,phys_angle_abs_error_deg,phys_angle_violation_fraction,phys_internal_clash_frame_ratio,phys_protein_clash_frame_ratio,phys_invalid_frame_ratio
+t1_contact_phase_candidate,T1,1357,0.0325138553820534,0.0013626743400012976,0.0,2.98364882365517,0.0001762046133009651,0.003537214443625645,0.533382461311717,0.5658806190125276

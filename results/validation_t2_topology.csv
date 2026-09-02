@@ -1,0 +1,2 @@
+model,task,system_count,phys_bond_abs_error,phys_bond_violation_fraction,phys_bond_break_fraction,phys_angle_abs_error_deg,phys_angle_violation_fraction,phys_internal_clash_frame_ratio,phys_protein_clash_frame_ratio,phys_invalid_frame_ratio
+QField-Dyn,T2,1357,0.03555908925658368,0.0016487524152120569,0.0,3.0170349407565005,0.0001610953678393642,0.006116433308769344,0.6907148120854827,0.7140014738393515

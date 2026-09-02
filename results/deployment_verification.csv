@@ -1,0 +1,4 @@
+task,system_count,comparison,max_abs_coordinate_difference,all_finite,repeat_exact
+T1,1357,final_experiment,0,true,true
+T2,1357,deployment_output_directly_evaluated,,true,true
+T3,1357,frozen_package,0,true,true

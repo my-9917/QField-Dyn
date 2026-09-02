@@ -1,0 +1,22 @@
+seed: 20260815
+
+data:
+  cache: reproduced_data/quantum_statistics.hdf5
+  internal_split: reproduced_data/quantum_split.csv
+
+model:
+  hidden_dim: 128
+  layer_count: 3
+
+training:
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.000001
+  max_epochs: 30
+  early_stopping_patience: 5
+  num_workers: 0
+
+outputs:
+  directory: reproduced_artifacts/quantum
+  log: reproduced_results/quantum_training.csv
+  metrics: reproduced_results/quantum_validation.csv
