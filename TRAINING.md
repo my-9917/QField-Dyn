@@ -126,6 +126,6 @@ T2 推理同时运行基础轨迹模型和 T2 联合模型，构造 0、0.25、0
 
     .venv/bin/python -m tools.predict_public --data GOAI_eval_public --output reproduced_public_results --tiers T1 T2 T3 T4 --device cuda
 
-该入口按每个体系的 meta.json 读取观测帧数、预测帧数和时间间隔，输出 `{id}_pred.xtc`；T4 使用独立长程生成路径。
+该入口按每个体系的 meta.json 读取观测帧数、预测帧数和时间间隔，输出 `{id}_pred.xtc`。T4 使用统一任务条件框架中的长时程条件分支：共享固定口袋、配体状态、观测历史、刚体/内部运动分解与物理约束，并针对 1 ns 间隔和 490 步跨度调整动力学更新。
 
 成功标准：训练损失和输出坐标均为有限值；量子内部验证、轨迹 validation loss 和专家内部验证完成；T1/T2/T3 分别输出 10/20/80 帧；评价报告同时包含 Geo、Phys、Dyn、Stab 与防静态指标。完成训练不等于可以替换冻结模型，只有联合比较通过才允许进入正式推理。若出现非有限损失，直接停止并保留训练日志，不跳过批次或降低标准。

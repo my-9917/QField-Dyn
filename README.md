@@ -2,15 +2,7 @@
 
 QField-Dyn（Quantum-Information-Enhanced Field Dynamics）根据 `GOAI_eval_public` 中每个体系的观测轨迹生成 T1–T4 未来轨迹。蛋白坐标始终固定，模型只预测配体运动；输出为包含完整体系原子、单位为 nm 的 XTC 文件。
 
-## 科学问题与意义
-
-本项目研究固定蛋白口袋条件下的小分子未来轨迹预测。该任务不仅要求坐标接近参考轨迹，还要求保持键长、键角、立体结构和碰撞合理性，并恢复涨落、速度相关与接触转换等动力学特征。单纯追求平均坐标误差容易产生静态、过度平滑或长程漂移，因此模型选择同时考虑 Geo、Phys、Dyn、Stab 与防静态表现。
-
-## 方法贡献与结果口径
-
-QField-Dyn 使用量子化学监督学习配体电子相关表示，并与固定蛋白口袋和观测轨迹共同编码。T1–T4 共享结构表示、运动分解、几何约束和物理条件，根据观测长度、帧间隔与预测跨度选择相应的时间尺度更新。项目进一步将 RMSF、速度分布、接触距离、接触转换和时间相关纳入训练或候选选择，避免轨迹退化为均值结构。
-
-完整本地代理结果、参照方法和适用边界见 [`RESULTS.md`](RESULTS.md)，原始汇总与逐体系数值位于 [`results/`](results/)，训练数据划分与复现链见 [`TRAINING.md`](TRAINING.md)。这些结果不是官方分数；公开 T4 不含未来真值，因此只报告格式、物理风险和观测统计，不报告未知未来准确率。
+正式封装时，目录名和输出目录中的 `xxxxxm429` 使用比赛平台显示的队伍 ID。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`；正式提交引用评审可访问的固定 release、tag 或 commit。
 
 ## 1. 环境安装
 
@@ -29,7 +21,7 @@ python3.10 -m venv .venv
 将组委会评测目录原样放在本包根目录：
 
 ```text
-QField-Dyn/
+GOAI_repro_xxxxxm429/
 ├── GOAI_eval_public/
 │   ├── README.md
 │   ├── protocol.json
@@ -73,7 +65,7 @@ bash run.sh
 成功后得到：
 
 ```text
-GOAI_pred_TEAMID/
+GOAI_pred_xxxxxm429/
 ├── T1/   # 30 条，每条 10 帧
 ├── T2/   # 30 条，每条 20 帧
 ├── T3/   # 30 条，每条 80 帧
@@ -82,13 +74,23 @@ GOAI_pred_TEAMID/
 
 验证摘要写入根目录 `reproduction_verification.json`。输出 XTC 只包含未来 `n_pred` 帧，原子数、顺序、时间与盒信息遵循评测包定义。
 
-## 7. 运行检查
+## 7. 运行检查与单体系测试
 
 `run.sh` 在推理前检查 Python 环境、CUDA、评测输入和 13 项模型产物；推理后检查 95 条文件的档次、命名、帧数、原子数、有限坐标、时间、盒子以及非配体原子固定性。
 
+单体系接口测试：
+
+```bash
+CUBLAS_WORKSPACE_CONFIG=:4096:8 .venv/bin/python -m tools.verify \
+  --input examples/input_t1.npz \
+  --reference examples/reference_t1.npz \
+  --task T1 \
+  --device cuda
+```
+
 ## 8. 硬件与耗时
 
-远程 NVIDIA A800 全量实测约 2 分钟生成并核对 95 个体系。进程峰值内存约 1.54 GB，PyTorch 峰值分配/保留显存约 39.0/52.4 MB；建议至少提供 1 个 CPU 核、4 GB 可用内存和 2 GB 可用显存。该建议不是多型号硬件上测得的最低边界。
+远程 NVIDIA A800 全量实测 123.10 秒生成并核对 95 个体系，折合平均约 1.30 秒/体系；该平均值包含批处理与全量核对开销，不是独立单体系基准。进程峰值内存约 1.54 GB，PyTorch 峰值分配/保留显存约 39.0/52.4 MB；建议至少提供 1 个 CPU 核、4 GB 可用内存和 2 GB 可用显存。该建议不是多型号硬件上测得的最低边界。
 
 ## 9. 训练数据、训练代码与外部资源
 
@@ -98,10 +100,7 @@ MISATO 数据：Zenodo record 7711953，version 1.0.0，DOI `10.5281/zenodo.7711
 
 项目仓库：`https://github.com/my-9917/QField-Dyn`  
 源码许可证：`Apache-2.0`  
-固定版本：`goai-finals-2026` tag  
-第三方依赖与数据授权：见 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)
-
-仓库不包含 MISATO 原始轨迹、官方评测输入、未来轨迹或由 MISATO 坐标导出的样例文件。NeuralMD 仅作为任务相关文献参考，未复用其代码、权重或数据。本项目未使用外部商业 API、外部势函数、外部基础模型或 MISATO 以外的外部 MD 数据。
+固定版本：`goai-finals-2026` tag
 
 ## 10. 已知限制与常见问题
 
@@ -110,4 +109,4 @@ MISATO 数据：Zenodo record 7711953，version 1.0.0，DOI `10.5281/zenodo.7711
 - T4 已作为完整加分档提交，因此复现流程会生成全部 5 条轨迹。
 - XTC 使用 nm；PDB 与模型内部单位转换由 `tools/public_io.py` 完成，不需要人工转换。
 - 公开 T4 的 PDB 元素列为空时，MDAnalysis 可能给出元素猜测警告，不影响原子顺序、坐标或输出核对。
-- 若 `GOAI_pred_TEAMID` 已存在，请在干净副本中重新运行，避免混合新旧结果。
+- 若 `GOAI_pred_xxxxxm429` 已存在，请在干净副本中重新运行，避免混合新旧结果。

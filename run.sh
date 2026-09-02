@@ -5,7 +5,7 @@ export CUBLAS_WORKSPACE_CONFIG=:4096:8
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON="$ROOT_DIR/.venv/bin/python"
 DATA_DIR="$ROOT_DIR/GOAI_eval_public"
-OUTPUT_DIR="$ROOT_DIR/GOAI_pred_TEAMID"
+OUTPUT_DIR="$ROOT_DIR/GOAI_pred_xxxxxm429"
 SUMMARY="$ROOT_DIR/reproduction_verification.json"
 
 test -x "$PYTHON"
