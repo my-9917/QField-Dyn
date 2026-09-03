@@ -110,9 +110,17 @@ class QFieldDynPredictor:
             observed_ligand_coordinates,
         )
         if task == "T1":
-            return self._predict_short_trajectory(*inputs), None
+            frames = self._predict_short_trajectory(*inputs)
+            return (
+                self._augment_with_observed_dynamics(frames, inputs, salt=1),
+                None,
+            )
         if task == "T2":
-            return self._predict_medium_trajectory(*inputs), None
+            frames = self._predict_medium_trajectory(*inputs)
+            return (
+                self._augment_with_observed_dynamics(frames, inputs, salt=2),
+                None,
+            )
         if task == "T3":
             return self._predict_long_trajectory(*inputs)
         raise ValueError(task)
@@ -272,6 +280,204 @@ class QFieldDynPredictor:
         ):
             return history_candidate
         return selected
+    def _augment_with_observed_dynamics(self, frames, inputs, salt):
+        """Add rigid activity bootstrapped from the observed segment.
+
+        The T1/T2 rollouts approximate the conditional mean trajectory, which
+        almost freezes the ligand (predicted step speed is a few percent of
+        the observed one).  Following the T4 recipe, bootstrap paired
+        translation/rotation innovations from the observed frames, add
+        centroid mean-reversion, keep new clashes out via projections, and
+        calibrate the activity scale against the observed step speed.
+        """
+        import numpy as np
+        from scipy.spatial.transform import Rotation
+        from .clash import build_graph_clash_physics, clash_counts
+        from .rotation_projection import project_rotation_without_new_clash
+        from .translation_projection import project_translation_without_new_clash
+        from .torsion_geometry import rigid_fit
+
+        (
+            protein_atomic_numbers,
+            protein_coordinates,
+            ligand_atomic_numbers,
+            ligand_bonds,
+            _ligand_structure_coordinates,
+            observed_ligand_coordinates,
+        ) = inputs
+        observed = np.asarray(observed_ligand_coordinates, dtype=np.float64)
+        if len(observed) < 3:
+            return frames
+        ligand_z = np.asarray(ligand_atomic_numbers, dtype=np.int64)
+        bonds = np.asarray(ligand_bonds, dtype=np.int64)
+        heavy = ligand_z != 1
+        protein_x = np.asarray(protein_coordinates, dtype=np.float64)
+        physics = build_graph_clash_physics(
+            np.asarray(protein_atomic_numbers, dtype=np.int64), ligand_z, bonds
+        )
+        fixed_protein = protein_x[physics["protein_heavy"]]
+        observed_heavy = observed[:, heavy]
+        centroids = observed_heavy.mean(axis=1)
+        translation_increments = np.diff(centroids, axis=0)
+        translation_innovations = (
+            translation_increments - translation_increments.mean(axis=0)
+        )
+        centered_centroids = centroids - centroids.mean(axis=0)
+        denominator = np.sum(centered_centroids[:-1] ** 2)
+        if denominator <= 0.0:
+            return frames
+        centroid_rho = float(
+            np.sum(centered_centroids[:-1] * centered_centroids[1:]) / denominator
+        )
+        mean_reversion = float(np.clip(1.0 - centroid_rho, 0.05, 0.5))
+        rotation_increments = []
+        for frame_index in range(len(observed) - 1):
+            rotation, _ = rigid_fit(
+                observed_heavy[frame_index], observed_heavy[frame_index + 1]
+            )
+            rotation_increments.append(
+                Rotation.from_matrix(rotation.T).as_rotvec()
+            )
+        rotation_increments = np.asarray(rotation_increments)
+        anchor_centroid = centroids[-1]
+        # Sphere centred on the observed centroid mean with the observed
+        # excursion range (plus a small margin) as radius; anchor (last
+        # observed centroid) can sit near that sphere's edge, so measure all
+        # drifts from the same centre the radius was computed from.
+        pocket_center = centroids.mean(axis=0)
+        excursion_radius = float(
+            np.max(np.linalg.norm(centered_centroids, axis=1)) + 1.0
+        )
+        base_frames = np.asarray(frames, dtype=np.float64)
+        step_count = len(base_frames)
+        pair_count = (step_count + 1) // 2
+        rng = np.random.default_rng(self.seed + salt)
+        pair_rotation_choice = rng.integers(
+            len(rotation_increments), size=pair_count
+        )
+        pair_rotation_sign = rng.choice((-1.0, 1.0), size=pair_count)
+        pair_translation_choice = rng.integers(
+            len(translation_innovations), size=pair_count
+        )
+        rotation_choice = np.repeat(pair_rotation_choice, 2)[:step_count]
+        rotation_sign = np.column_stack(
+            (pair_rotation_sign, -pair_rotation_sign)
+        ).reshape(-1)[:step_count]
+        translation_choice = np.repeat(pair_translation_choice, 2)[:step_count]
+        translation_sign = np.tile((1.0, -1.0), pair_count)[:step_count]
+
+        def generate(scale):
+            current = observed[-1].copy()
+            _, start_clash = clash_counts(current[None], fixed_protein, physics)
+            current_protein_clash = int(start_clash[0])
+            prediction = []
+            for step in range(step_count):
+                previous = current.copy()
+                rotation, translation = rigid_fit(
+                    current[heavy], base_frames[step][heavy]
+                )
+                aligned = base_frames[step] @ rotation + translation
+                # Adopt the model's internal (torsion) geometry only when the
+                # transplant does not add protein contacts at the current
+                # pose; otherwise keep the previous conformation (T4 style).
+                _, aligned_clash = clash_counts(
+                    aligned[None], fixed_protein, physics
+                )
+                if aligned_clash[0] <= current_protein_clash:
+                    frame = aligned
+                else:
+                    frame = current
+                rotation_vector = (
+                    scale
+                    * rotation_sign[step]
+                    * rotation_increments[rotation_choice[step]]
+                )
+                candidate, _ = project_rotation_without_new_clash(
+                    frame, rotation_vector, fixed_protein, physics
+                )
+                candidate_centroid = candidate[heavy].mean(axis=0)
+                displacement = (
+                    scale
+                    * translation_sign[step]
+                    * translation_innovations[translation_choice[step]]
+                    - mean_reversion * (candidate_centroid - anchor_centroid)
+                )
+                # Keep the centroid inside the pocket range visited by the
+                # observed segment: clip the displacement so the planned
+                # centroid lands on the sphere instead of pulling the frame
+                # back after the fact (which could create fresh clashes).
+                target_centroid = candidate_centroid + displacement
+                drift = target_centroid - pocket_center
+                drift_norm = float(np.linalg.norm(drift))
+                if drift_norm > excursion_radius:
+                    displacement = (
+                        pocket_center
+                        + drift * (excursion_radius / drift_norm)
+                        - candidate_centroid
+                    )
+                candidate, _ = project_translation_without_new_clash(
+                    candidate, displacement, fixed_protein, physics
+                )
+                _, protein_clash = clash_counts(
+                    candidate[None], fixed_protein, physics
+                )
+                # Real frames routinely carry marginal contacts under the
+                # 0.75 x vdW criterion, so only revert when the step makes
+                # the clash count worse than the current frame.
+                if protein_clash[0] > current_protein_clash:
+                    candidate = previous
+                else:
+                    current_protein_clash = protein_clash[0]
+                current = candidate
+                prediction.append(current.copy())
+            return np.asarray(prediction)
+
+        observed_speed = np.linalg.norm(
+            np.diff(observed_heavy, axis=0), axis=-1
+        ).mean()
+        if not np.isfinite(observed_speed) or observed_speed <= 0.0:
+            return frames
+
+        def generated_speed(scale):
+            trajectory = generate(scale)
+            speed = np.linalg.norm(
+                np.diff(
+                    np.concatenate(
+                        (observed_heavy[-1:], trajectory[:, heavy]), axis=0
+                    ),
+                    axis=0,
+                ),
+                axis=-1,
+            ).mean()
+            return float(speed), trajectory
+
+        # The achieved speed saturates in scale (clash projections cap the
+        # per-step motion and centroid mean-reversion cancels large drives),
+        # so a one-point rescale undershoots.  Bisect on the achieved speed.
+        low, high = 0.0, 1.0
+        speed_low, traj_low = generated_speed(0.0)
+        speed_high, traj_high = generated_speed(1.0)
+        if speed_high < observed_speed:
+            while high < 16.0:
+                high *= 2.0
+                speed_high, traj_high = generated_speed(high)
+                if speed_high >= observed_speed:
+                    break
+        for _ in range(12):
+            middle = 0.5 * (low + high)
+            speed_middle, traj_middle = generated_speed(middle)
+            if speed_middle < observed_speed:
+                low, speed_low, traj_low = middle, speed_middle, traj_middle
+            else:
+                high, speed_high, traj_high = middle, speed_middle, traj_middle
+        if abs(speed_low - observed_speed) <= abs(speed_high - observed_speed):
+            augmented = traj_low
+        else:
+            augmented = traj_high
+        if not np.isfinite(augmented).all():
+            return frames
+        return augmented.astype(np.float32)
+
     def _predict_short_trajectory(
         self,
         protein_atomic_numbers,
