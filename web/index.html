@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>QField-Dyn — Trajectory Forecast</title>
+<title>QField-Dyn — 蛋白质–配体轨迹预测</title>
 <style>
   :root {
     --bg:#0d1117; --panel:#161b22; --line:#30363d; --fg:#c9d1d9;
@@ -56,71 +56,71 @@
 </style>
 </head>
 <body>
-<header><h1>QField-Dyn</h1><span>Protocol-compatible protein–ligand future trajectory inference</span></header>
+<header><h1>QField-Dyn</h1><span>符合赛事协议的蛋白质–配体未来轨迹预测</span></header>
 <main>
   <section class="panel">
-    <h2>Prediction request</h2>
-    <label for="dataset">Dataset ZIP</label>
+    <h2>预测请求</h2>
+    <label for="dataset">数据集 ZIP</label>
     <label class="upload" id="dropZone" for="dataset">
-      <span id="uploadText">Choose or drop one protocol-compatible ZIP<br><small>Observed frames only · PDB + XTC + meta.json</small></span>
+      <span id="uploadText">选择或拖入一个协议兼容 ZIP<br><small>仅含观测帧 · PDB + XTC + meta.json</small></span>
       <input id="dataset" type="file" accept=".zip,application/zip">
     </label>
 
-    <label for="tier">Prediction specification</label>
+    <label for="tier">预测规格</label>
     <select id="tier">
-      <option value="T1">T1 · 10 observed → 10 predicted</option>
-      <option value="T2">T2 · 80 observed → 20 predicted</option>
-      <option value="T3">T3 · 20 observed → 80 predicted</option>
-      <option value="T4">T4 · 10 observed → 490 predicted</option>
+      <option value="T1">T1 · 观测 10 帧 → 预测 10 帧</option>
+      <option value="T2">T2 · 观测 80 帧 → 预测 20 帧</option>
+      <option value="T3">T3 · 观测 20 帧 → 预测 80 帧</option>
+      <option value="T4">T4 · 观测 10 帧 → 预测 490 帧</option>
     </select>
-    <div class="chips" aria-label="Quick specification selection">
-      <button class="chip" type="button" data-tier="T1">T1 local</button>
-      <button class="chip" type="button" data-tier="T2">T2 history</button>
-      <button class="chip" type="button" data-tier="T3">T3 rollout</button>
-      <button class="chip" type="button" data-tier="T4">T4 long range</button>
+    <div class="chips" aria-label="快速选择预测规格">
+      <button class="chip" type="button" data-tier="T1">T1 局部</button>
+      <button class="chip" type="button" data-tier="T2">T2 历史</button>
+      <button class="chip" type="button" data-tier="T3">T3 长预测</button>
+      <button class="chip" type="button" data-tier="T4">T4 长程</button>
     </div>
     <div class="meta" id="specMeta"></div>
-    <button id="runButton" type="button" disabled>Run prediction</button>
-    <div class="footnote">The service reads only the uploaded topology and observed trajectory. It does not retrieve future frames or identify anonymized systems.</div>
+    <button id="runButton" type="button" disabled>开始预测</button>
+    <div class="footnote">服务只读取上传的拓扑和观测轨迹，不检索未来帧或识别匿名体系。</div>
   </section>
 
   <section class="panel">
-    <h2>Run</h2>
-    <div class="status-line"><span>Status: <strong id="status" class="run">Ready</strong></span><span class="mono" id="jobId">—</span></div>
-    <div class="progress" aria-label="Prediction progress"><span id="progressBar"></span></div>
+    <h2>运行状态</h2>
+    <div class="status-line"><span>状态：<strong id="status" class="run">就绪</strong></span><span class="mono" id="jobId">—</span></div>
+    <div class="progress" aria-label="预测进度"><span id="progressBar"></span></div>
     <div class="run-grid">
       <div>
         <table>
           <tbody>
-            <tr><th>File</th><td id="fileCell">—</td></tr>
-            <tr><th>Tier</th><td id="tierCell">T1</td></tr>
-            <tr><th>Systems</th><td id="systemsCell">—</td></tr>
-            <tr><th>Device</th><td id="deviceCell">NVIDIA GPU</td></tr>
-            <tr><th>Output</th><td id="outputCell">Future frames only</td></tr>
+            <tr><th>文件</th><td id="fileCell">—</td></tr>
+            <tr><th>档次</th><td id="tierCell">T1</td></tr>
+            <tr><th>体系数</th><td id="systemsCell">—</td></tr>
+            <tr><th>设备</th><td id="deviceCell">NVIDIA GPU</td></tr>
+            <tr><th>输出</th><td id="outputCell">仅未来帧</td></tr>
           </tbody>
         </table>
-        <a class="download" id="download" href="#">⬇ Download prediction ZIP</a>
+        <a class="download" id="download" href="#">⬇ 下载预测结果 ZIP</a>
       </div>
       <div>
-        <pre id="log">Upload a compatible ZIP and select a prediction specification.</pre>
+        <pre id="log">请上传协议兼容 ZIP，并选择预测规格。</pre>
       </div>
     </div>
   </section>
 
   <section class="panel boundary">
-    <div><strong>Supported input</strong>Fixed-protein, ligand-motion trajectories with the QField-Dyn package structure and atom ordering.</div>
-    <div><strong>Generated output</strong>Full-system XTC files in nm; protein and environment coordinates remain fixed while ligand coordinates are forecast.</div>
-    <div><strong>Current boundary</strong>General protein–ligand use requires the same topology conventions and one of the four published temporal specifications.</div>
+    <div><strong>支持的输入</strong>符合 QField-Dyn 目录结构与原子顺序的固定蛋白、配体运动轨迹。</div>
+    <div><strong>生成的输出</strong>单位为 nm 的完整体系 XTC；蛋白与环境坐标固定，只预测配体坐标。</div>
+    <div><strong>当前适用边界</strong>蛋白质–配体数据需使用相同拓扑约定，并符合四种公开时间规格之一。</div>
   </section>
 </main>
 <script>
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const specs = {
-  T1:{obs:10,pred:10,dt:'80 ps',focus:'Local dynamics'},
-  T2:{obs:80,pred:20,dt:'80 ps',focus:'History-conditioned forecast'},
-  T3:{obs:20,pred:80,dt:'80 ps',focus:'Long rollout'},
-  T4:{obs:10,pred:490,dt:'1,000 ps',focus:'Long-range stability'}
+  T1:{obs:10,pred:10,dt:'80 ps',focus:'局部动力学'},
+  T2:{obs:80,pred:20,dt:'80 ps',focus:'历史条件预测'},
+  T3:{obs:20,pred:80,dt:'80 ps',focus:'长时滚动预测'},
+  T4:{obs:10,pred:490,dt:'1,000 ps',focus:'长程稳定性'}
 };
 let selectedFile = null;
 let requestSeq = 0;
@@ -129,8 +129,8 @@ function renderSpec() {
   const tier = $('tier').value;
   const s = specs[tier];
   $('specMeta').innerHTML = [
-    ['Observed frames', s.obs], ['Predicted frames', s.pred],
-    ['Frame interval', s.dt], ['Primary focus', s.focus]
+    ['观测帧数', s.obs], ['预测帧数', s.pred],
+    ['帧间隔', s.dt], ['主要目标', s.focus]
   ].map(([k,v]) => `<span>${esc(k)}</span><strong>${esc(v)}</strong>`).join('');
   $('tierCell').innerHTML = esc(tier);
 }
@@ -141,7 +141,7 @@ function chooseFile(file) {
   $('fileCell').innerHTML = selectedFile ? esc(selectedFile.name) : '—';
   $('uploadText').innerHTML = selectedFile
     ? `${esc(selectedFile.name)}<br><small>${esc((selectedFile.size / 1048576).toFixed(2))} MiB</small>`
-    : 'Choose or drop one protocol-compatible ZIP<br><small>Observed frames only · PDB + XTC + meta.json</small>';
+    : '选择或拖入一个协议兼容 ZIP<br><small>仅含观测帧 · PDB + XTC + meta.json</small>';
 }
 
 function setState(label, css, progress, message) {
@@ -156,7 +156,7 @@ async function pollJob(jobId, seq) {
   while (seq === requestSeq) {
     try {
       const response = await fetch(`/api/jobs/${encodeURIComponent(jobId)}`, {cache:'no-store'});
-      if (!response.ok) throw new Error(`Status request failed (${response.status})`);
+      if (!response.ok) throw new Error(`状态请求失败（${response.status}）`);
       const job = await response.json();
       transientFailures = 0;
       $('systemsCell').innerHTML = esc(job.systems ?? '—');
@@ -174,7 +174,7 @@ async function pollJob(jobId, seq) {
     } catch (error) {
       transientFailures += 1;
       if (transientFailures >= 3) {
-        setState('Connection error', 'bad', 0, error.message);
+        setState('连接失败', 'bad', 0, error.message);
         $('runButton').disabled = false;
         return;
       }
@@ -190,20 +190,20 @@ async function submitJob() {
   $('download').style.display = 'none';
   $('jobId').innerHTML = '—';
   $('systemsCell').innerHTML = '—';
-  setState('Uploading', 'run', 3, 'Uploading observed trajectory package…');
+  setState('上传中', 'run', 3, '正在上传观测轨迹包…');
   const body = new FormData();
   body.append('tier', $('tier').value);
   body.append('dataset', selectedFile, selectedFile.name);
   try {
     const response = await fetch('/api/jobs', {method:'POST', body});
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
+    if (!response.ok) throw new Error(data.error || `请求失败（${response.status}）`);
     if (seq !== requestSeq) return;
     $('jobId').innerHTML = esc(data.job_id);
     await pollJob(data.job_id, seq);
   } catch (error) {
     if (seq !== requestSeq) return;
-    setState('Request failed', 'bad', 0, error.message);
+    setState('请求失败', 'bad', 0, error.message);
     $('runButton').disabled = false;
   }
 }

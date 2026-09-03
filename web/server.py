@@ -45,12 +45,12 @@ def extract_dataset(archive_path, data_root, tier):
         entries = {info.filename: info for info in archive.infolist()}
         ids_path = f"{tier}/ids.txt"
         if ids_path not in entries:
-            raise ValueError(f"Missing {ids_path} at the ZIP root")
+            raise ValueError(f"ZIP 根目录缺少 {ids_path}")
         ids = [line.strip() for line in archive.read(ids_path).decode("utf-8").splitlines() if line.strip()]
         if not ids or len(ids) > 100:
-            raise ValueError("ids.txt must contain 1–100 system IDs")
+            raise ValueError("ids.txt 必须包含 1–100 个体系 ID")
         if len(ids) != len(set(ids)) or any(not ID_PATTERN.fullmatch(value) for value in ids):
-            raise ValueError("ids.txt contains duplicate or invalid system IDs")
+            raise ValueError("ids.txt 包含重复或无效的体系 ID")
 
         required = [ids_path]
         for complex_id in ids:
@@ -58,15 +58,15 @@ def extract_dataset(archive_path, data_root, tier):
             required.extend((f"{prefix}.pdb", f"{prefix}_obs.xtc", f"{tier}/{complex_id}/meta.json"))
         missing = [name for name in required if name not in entries]
         if missing:
-            raise ValueError(f"Missing required file: {missing[0]}")
+            raise ValueError(f"缺少必需文件：{missing[0]}")
 
         for name in required:
             path = PurePosixPath(name)
             if path.is_absolute() or ".." in path.parts:
-                raise ValueError("Unsafe ZIP path")
+                raise ValueError("ZIP 路径不安全")
             info = entries[name]
             if (info.external_attr >> 16) & 0o170000 == 0o120000:
-                raise ValueError("Symbolic links are not accepted")
+                raise ValueError("上传包不接受符号链接")
             target = data_root.joinpath(*path.parts)
             target.parent.mkdir(parents=True, exist_ok=True)
             with archive.open(info) as source, target.open("wb") as destination:
@@ -79,7 +79,7 @@ def extract_dataset(archive_path, data_root, tier):
         expected = {"id": complex_id, "tier": tier, **spec}
         for key, value in expected.items():
             if meta.get(key) != value:
-                raise ValueError(f"{complex_id}: meta.json field {key} must be {value}")
+                raise ValueError(f"{complex_id}：meta.json 字段 {key} 必须为 {value}")
     return ids
 
 
@@ -93,10 +93,10 @@ def validate_predictions(data_root, prediction_root, tier, ids):
         output = prediction_root / tier / f"{complex_id}_pred.xtc"
         coordinates, _, times = _read_xtc(output)
         if coordinates.shape != (meta["n_pred"], meta["n_atoms"], 3):
-            raise ValueError(f"{complex_id}: generated trajectory shape is invalid")
+            raise ValueError(f"{complex_id}：生成轨迹形状不符合规格")
         expected_times = (meta["n_obs"] + np.arange(meta["n_pred"])) * meta["dt_ps"]
         if not np.allclose(times, expected_times):
-            raise ValueError(f"{complex_id}: generated trajectory timestamps are invalid")
+            raise ValueError(f"{complex_id}：生成轨迹时间戳不符合规格")
 
 
 def run_job(job_id, tier, archive_path):
@@ -105,9 +105,9 @@ def run_job(job_id, tier, archive_path):
     prediction_root = job_dir / "predictions"
     log_path = job_dir / "inference.log"
     try:
-        set_job(job_id, state="running", label="Validating input", progress=8, message="Checking package structure and temporal specification…")
+        set_job(job_id, state="running", label="检查输入", progress=8, message="正在检查目录结构与时间规格…")
         ids = extract_dataset(archive_path, data_root, tier)
-        set_job(job_id, systems=len(ids), label="Queued on GPU", progress=15, message=f"Validated {len(ids)} system(s). Waiting for the inference worker…")
+        set_job(job_id, systems=len(ids), label="GPU 队列", progress=15, message=f"已检查 {len(ids)} 个体系，等待推理任务…")
         command = [
             sys.executable, "-m", "tools.predict_public", "--data", str(data_root),
             "--output", str(prediction_root), "--tiers", tier, "--device", "cuda",
@@ -127,21 +127,21 @@ def run_job(job_id, tier, archive_path):
                 if match:
                     done, total = map(int, match.groups())
                     progress = 15 + round(70 * done / total)
-                    set_job(job_id, label="Running inference", progress=progress, message=f"Predicted {done}/{total} system(s).")
+                    set_job(job_id, label="正在推理", progress=progress, message=f"已完成 {done}/{total} 个体系。")
             exit_code = process.wait()
         if exit_code:
             tail = "\n".join(log_path.read_text(encoding="utf-8").splitlines()[-8:])
-            raise RuntimeError(tail or f"Inference exited with code {exit_code}")
+            raise RuntimeError(tail or f"推理进程退出码：{exit_code}")
 
-        set_job(job_id, label="Validating output", progress=90, message="Checking XTC frame counts, atom counts and timestamps…")
+        set_job(job_id, label="检查输出", progress=90, message="正在检查 XTC 帧数、原子数与时间戳…")
         validate_predictions(data_root, prediction_root, tier, ids)
         result_path = job_dir / f"QField-Dyn_{tier}_{job_id}.zip"
         with zipfile.ZipFile(result_path, "w", compression=zipfile.ZIP_DEFLATED) as result:
             for output in sorted((prediction_root / tier).glob("*_pred.xtc")):
                 result.write(output, f"{tier}/{output.name}")
         set_job(
-            job_id, state="completed", label="Completed", progress=100,
-            message=f"Generated and validated {len(ids)} trajectory file(s).",
+            job_id, state="completed", label="已完成", progress=100,
+            message=f"已生成并检查 {len(ids)} 条轨迹。",
             download_url=f"/api/jobs/{job_id}/download",
         )
     except Exception as error:
@@ -175,18 +175,18 @@ class Handler(BaseHTTPRequestHandler):
             return
         match = re.fullmatch(r"/api/jobs/([0-9a-f]{12})(/download)?", path)
         if not match:
-            self.json_response(HTTPStatus.NOT_FOUND, {"error": "Not found"})
+            self.json_response(HTTPStatus.NOT_FOUND, {"error": "请求地址不存在"})
             return
         job_id, download = match.groups()
         with LOCK:
             job = JOBS.get(job_id)
             payload = dict(job) if job else None
         if payload is None:
-            self.json_response(HTTPStatus.NOT_FOUND, {"error": "Unknown job"})
+            self.json_response(HTTPStatus.NOT_FOUND, {"error": "任务不存在"})
             return
         if download:
             if payload["state"] != "completed":
-                self.json_response(HTTPStatus.CONFLICT, {"error": "Result is not ready"})
+                self.json_response(HTTPStatus.CONFLICT, {"error": "结果尚未生成"})
                 return
             result_path = JOB_ROOT / job_id / f"QField-Dyn_{payload['tier']}_{job_id}.zip"
             body = result_path.read_bytes()
@@ -201,17 +201,17 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if urlparse(self.path).path != "/api/jobs":
-            self.json_response(HTTPStatus.NOT_FOUND, {"error": "Not found"})
+            self.json_response(HTTPStatus.NOT_FOUND, {"error": "请求地址不存在"})
             return
         content_length = int(self.headers.get("Content-Length", "0"))
         if content_length <= 0 or content_length > MAX_UPLOAD_BYTES:
-            self.json_response(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, {"error": "ZIP must be smaller than 512 MiB"})
+            self.json_response(HTTPStatus.REQUEST_ENTITY_TOO_LARGE, {"error": "ZIP 必须小于 512 MiB"})
             return
         form = cgi.FieldStorage(fp=self.rfile, headers=self.headers, environ={"REQUEST_METHOD": "POST", "CONTENT_TYPE": self.headers.get("Content-Type", "")})
         tier = form.getfirst("tier", "")
         upload = form["dataset"] if "dataset" in form else None
         if tier not in SPECS or upload is None or not upload.filename.lower().endswith(".zip"):
-            self.json_response(HTTPStatus.BAD_REQUEST, {"error": "Provide a ZIP and one T1–T4 specification"})
+            self.json_response(HTTPStatus.BAD_REQUEST, {"error": "请上传 ZIP 并选择一个 T1–T4 规格"})
             return
         job_id = uuid.uuid4().hex[:12]
         job_dir = JOB_ROOT / job_id
@@ -221,8 +221,8 @@ class Handler(BaseHTTPRequestHandler):
             shutil.copyfileobj(upload.file, destination)
         with LOCK:
             JOBS[job_id] = {
-                "job_id": job_id, "tier": tier, "state": "queued", "label": "Queued",
-                "progress": 5, "message": "Upload complete. Prediction job entered the GPU queue.",
+                "job_id": job_id, "tier": tier, "state": "queued", "label": "已排队",
+                "progress": 5, "message": "上传完成，预测任务已进入 GPU 队列。",
                 "systems": None, "download_url": None,
             }
         EXECUTOR.submit(run_job, job_id, tier, archive_path)

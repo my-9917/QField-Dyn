@@ -1,8 +1,8 @@
-# QField-Dyn 可复现推理包
+# QField-Dyn 可复现代码包
 
 QField-Dyn（Quantum-Information-Enhanced Field Dynamics）根据 `GOAI_eval_public` 中每个体系的观测轨迹生成 T1–T4 未来轨迹。蛋白坐标始终固定，模型只预测配体运动；输出为包含完整体系原子、单位为 nm 的 XTC 文件。
 
-本包使用比赛平台队伍 ID `xxxxxm429`。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`，正式版本固定为 `goai-finals-2026-r2` tag。
+本包使用比赛平台队伍 ID `xxxxxm429`。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`，正式版本固定为 `goai-finals-2026-r3` tag。
 
 ## 1. 环境安装
 
@@ -110,7 +110,7 @@ MISATO 数据：Zenodo record 7711953，version 1.0.0，DOI `10.5281/zenodo.7711
 
 项目仓库：`https://github.com/my-9917/QField-Dyn`  
 源码许可证：`Apache-2.0`  
-固定版本：`goai-finals-2026-r2` tag
+固定版本：`goai-finals-2026-r3` tag
 
 ## 11. 已知限制与常见问题
 
