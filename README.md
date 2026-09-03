@@ -1,14 +1,16 @@
 # QField-Dyn 可复现代码包
 
-QField-Dyn（Quantum-Information-Enhanced Field Dynamics）根据 `GOAI_eval_public` 中每个体系的观测轨迹生成 T1–T4 未来轨迹。蛋白坐标始终固定，模型只预测配体运动；输出为包含完整体系原子、单位为 nm 的 XTC 文件。
+QField-Dyn（Quantum-Chemistry-Informed Field Dynamics）根据 `GOAI_eval_public` 中每个体系的观测轨迹生成 T1–T4 未来轨迹。蛋白坐标始终固定，模型只预测配体运动；输出为包含完整体系原子、单位为 nm 的 XTC 文件。
 
-本包使用比赛平台队伍 ID `xxxxxm429`。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`，正式版本固定为 `goai-finals-2026-r3` tag。
+本包使用比赛平台队伍 ID `xxxxxm429`。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`，正式版本固定为 `goai-finals-2026-r4` tag。
 
 ## 1. 环境安装
 
-主要安装路径为 Python 3.10 虚拟环境：
+主要安装路径为 Python 3.10 虚拟环境。Ubuntu/Debian 需先安装 Python 3.10 的 venv 组件：
 
 ```bash
+sudo apt-get update
+sudo apt-get install -y python3.10-venv
 python3.10 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
 .venv/bin/python -m pip install -r requirements-public.txt
