@@ -2,7 +2,7 @@
 
 QField-Dyn 的英文全称为 Quantum-Chemistry-Supervised Response Fields for Generalizable Protein–Ligand Dynamics Prediction，中文作品名为“QField-Dyn：量子化学监督响应场驱动的可泛化蛋白–配体动力学预测方法”。本方法根据 `GOAI_eval_public` 中每个体系的观测轨迹生成 T1–T4 未来轨迹。蛋白坐标始终固定，模型只预测配体运动；输出为包含完整体系原子、单位为 nm 的 XTC 文件。
 
-本包使用比赛平台队伍 ID `xxxxxm429`。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`，正式版本固定为 `goai-finals-2026-r7` tag。
+本包使用比赛平台队伍 ID `xxxxxm429`。项目代码仓库为 `https://github.com/my-9917/QField-Dyn`，正式版本固定为 `goai-finals-2026-r6` tag。
 
 ## 1. 环境安装
 
