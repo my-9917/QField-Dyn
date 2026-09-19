@@ -1,6 +1,6 @@
-# QField-Dyn：量子信息增强的蛋白-配体结合轨迹预测
+# QField-Dyn：量子化学监督响应场驱动的可泛化蛋白–配体动力学预测方法
 
-**QField-Dyn: Quantum-Information-Enhanced Protein–Ligand Binding Trajectory Prediction**
+**QField-Dyn: Generalizable Protein–Ligand Dynamics Prediction Driven by Quantum-Chemistry-Supervised Response Fields**
 
 QField-Dyn在固定蛋白与离子环境中，根据观测轨迹、分子拓扑和物理时间生成配体未来全原子坐标。共享结构编码器、六比特量子历史状态、三层结构条件化重上传读出、条件轨迹流与几何适配器组成完整推理链。
 
@@ -33,6 +33,8 @@ CUDA_VISIBLE_DEVICES=0 bash run.sh /path/to/observations outputs/predictions
 ```
 
 `models/E3.pt`和`models/epoch_02.pt`随仓库提供。输入采用PDB、观测XTC和任务元数据，格式见[输入与推理](docs/inference.md)。预测读取观测段；未来真值只进入评价。
+
+赛事复现支持直接运行`bash run.sh`：输入放在仓库根目录的`GOAI_eval_public/`，输出写入相邻的`GOAI_pred_xxxxxm429/T1`至`T4`目录，文件名为`<case>_pred.xtc`。`reproduction_verification.json`记录帧数、原子数、时间、模型身份与精确重放结果。`PYTHON`环境变量可指定已有的Python环境。
 
 启动上传、推理、播放和下载页面：
 

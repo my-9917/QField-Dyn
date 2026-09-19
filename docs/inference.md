@@ -37,7 +37,9 @@ PDB与XTC原子顺序一致，元素和配体CONECT连接完整。观测从0 ps�
 CUDA_VISIBLE_DEVICES=0 bash run.sh /absolute/path/observations outputs/example
 ```
 
-输出为`<id>_pred.xtc`、轨迹及复现元数据。`--verify-replay`会额外执行一次相同随机种子的完整生成。完整生成时间与重放时间分别记录。
+输出按`T1/<id>_pred.xtc`至`T4/<id>_pred.xtc`组织，生成证据保存在`outputs/reproduction/`，检查汇总为`reproduction_verification.json`。`--verify-replay`会额外执行一次相同随机种子的完整生成。完整生成时间与重放时间分别记录。
+
+赛事包支持无参数运行`bash run.sh`：默认输入为`GOAI_eval_public/`，默认输出为相邻的`../GOAI_pred_xxxxxm429/`。默认Python为`.venv/bin/python`，可通过`PYTHON`环境变量指定环境。
 
 只运行某个案例可直接使用底层入口：
 

@@ -126,7 +126,7 @@
   "solver_steps": 64,
   "coordinate_tolerance_angstrom": 0.01,
   "metric_scope": "Geo/Phys/Dyn/Stab; single-realization errors and deterministic-form ES; ensemble coverage not claimed",
-  "project_name": "QField-Dyn：量子信息增强的蛋白-配体结合轨迹预测",
+  "project_name": "QField-Dyn：量子化学监督响应场驱动的可泛化蛋白–配体动力学预测方法",
   "model": {
     "base_sha256": "68b477c71e2207c073595fe1c354cd8699217d044500a0b60e34a84fd72961d3",
     "adapter_sha256": "9bc7f02640d92edb699fe18de6b6c61573e3c9e3352630c7b0b064793bcf1a5f",
