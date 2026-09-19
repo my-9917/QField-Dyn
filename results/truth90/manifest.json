@@ -1,0 +1,950 @@
+{
+  "version": "truth90_validation_0920_v1",
+  "members": [
+    "6RQK",
+    "1FHR",
+    "5O7E",
+    "6QDX",
+    "6G0Z",
+    "6E86",
+    "5UBG",
+    "5MKA",
+    "6IIK",
+    "2FQT",
+    "5D3X",
+    "6A87",
+    "6E13",
+    "5SYM",
+    "5C3P",
+    "6AR2",
+    "2F10",
+    "2LY0",
+    "2GVV",
+    "3A1C",
+    "5XO7",
+    "4Z88",
+    "3OKC",
+    "5UV1",
+    "4D4D",
+    "4UAU",
+    "4LIL",
+    "6IRT",
+    "5NWH",
+    "1SWI",
+    "1F9G",
+    "6HQ7",
+    "6KNH",
+    "3E3C",
+    "3R24",
+    "4B4Q",
+    "5NW7",
+    "2VCB",
+    "2POQ",
+    "4POP",
+    "5CSD",
+    "2YAZ",
+    "3IL5",
+    "1P28",
+    "2LBV",
+    "5J4N",
+    "5DV4",
+    "1UZ4",
+    "5CPR",
+    "6B4H",
+    "4YMH",
+    "4AQ4",
+    "6GDY",
+    "4JGV",
+    "2QPU",
+    "6NAF",
+    "2OYM",
+    "4Y4V",
+    "6H78",
+    "4C1Y",
+    "5KDE",
+    "1BO5",
+    "5OHY",
+    "6MI6",
+    "1R6N",
+    "5HFJ",
+    "2WSX",
+    "3HB4",
+    "3ZZF",
+    "4CD1",
+    "5VQE",
+    "1QFT",
+    "3NRZ",
+    "5CW8",
+    "1SYO",
+    "2VMD",
+    "5L13",
+    "2XGS",
+    "6TL2",
+    "4LH3",
+    "2YMT",
+    "5B4W",
+    "6HK6",
+    "6H9X",
+    "4CS9",
+    "3P2E",
+    "6SY7",
+    "3AY0",
+    "2VC9",
+    "1NNU"
+  ],
+  "cases_by_tier": {
+    "T1": 30,
+    "T2": 30,
+    "T3": 30
+  },
+  "source": "MISATO native validation trajectories; cached protein-aligned semi-flexible targets",
+  "selection": {
+    "namespace": "qmem-truth90-20260920:",
+    "rule": "first 90 SHA256-ranked eligible complex IDs; round-robin T1/T2/T3",
+    "predictions_used": false,
+    "eligible_population": 192
+  },
+  "training_exclusion": {
+    "intersections": {
+      "full_training": [],
+      "inherited_training": [],
+      "production_training": [],
+      "adaptation_training": [],
+      "neuralmd_training": []
+    },
+    "counts": {
+      "full_training": 9846,
+      "inherited_training": 68,
+      "production_training": 2048,
+      "adaptation_training": 128,
+      "neuralmd_training": 13765
+    }
+  },
+  "generalization_scope": "complex identity excluded from training; family/scaffold independence not asserted",
+  "paths_per_case": 1,
+  "seed": 2026091407,
+  "solver_steps": 64,
+  "coordinate_tolerance_angstrom": 0.01,
+  "metric_scope": "Geo/Phys/Dyn/Stab; single-realization errors and deterministic-form ES; ensemble coverage not claimed",
+  "project_name": "QField-Dyn：量子信息增强的蛋白-配体结合轨迹预测",
+  "model": {
+    "base_sha256": "68b477c71e2207c073595fe1c354cd8699217d044500a0b60e34a84fd72961d3",
+    "adapter_sha256": "9bc7f02640d92edb699fe18de6b6c61573e3c9e3352630c7b0b064793bcf1a5f",
+    "adapter_filename": "epoch_02.pt",
+    "name": "QField-Dyn",
+    "main_model_epoch": 3,
+    "structural_adapter_epoch": 2
+  },
+  "tasks": [
+    {
+      "key": "6RQK_T1",
+      "id": "6RQK",
+      "tier": "T1",
+      "evaluation_case": "T1-1",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "1FHR_T2",
+      "id": "1FHR",
+      "tier": "T2",
+      "evaluation_case": "T2-1",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "5O7E_T3",
+      "id": "5O7E",
+      "tier": "T3",
+      "evaluation_case": "T3-1",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "6QDX_T1",
+      "id": "6QDX",
+      "tier": "T1",
+      "evaluation_case": "T1-2",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "6G0Z_T2",
+      "id": "6G0Z",
+      "tier": "T2",
+      "evaluation_case": "T2-2",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "6E86_T3",
+      "id": "6E86",
+      "tier": "T3",
+      "evaluation_case": "T3-2",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "5UBG_T1",
+      "id": "5UBG",
+      "tier": "T1",
+      "evaluation_case": "T1-3",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "5MKA_T2",
+      "id": "5MKA",
+      "tier": "T2",
+      "evaluation_case": "T2-3",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "6IIK_T3",
+      "id": "6IIK",
+      "tier": "T3",
+      "evaluation_case": "T3-3",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "2FQT_T1",
+      "id": "2FQT",
+      "tier": "T1",
+      "evaluation_case": "T1-4",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "5D3X_T2",
+      "id": "5D3X",
+      "tier": "T2",
+      "evaluation_case": "T2-4",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "6A87_T3",
+      "id": "6A87",
+      "tier": "T3",
+      "evaluation_case": "T3-4",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "6E13_T1",
+      "id": "6E13",
+      "tier": "T1",
+      "evaluation_case": "T1-5",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "5SYM_T2",
+      "id": "5SYM",
+      "tier": "T2",
+      "evaluation_case": "T2-5",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "5C3P_T3",
+      "id": "5C3P",
+      "tier": "T3",
+      "evaluation_case": "T3-5",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "6AR2_T1",
+      "id": "6AR2",
+      "tier": "T1",
+      "evaluation_case": "T1-6",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "2F10_T2",
+      "id": "2F10",
+      "tier": "T2",
+      "evaluation_case": "T2-6",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "2LY0_T3",
+      "id": "2LY0",
+      "tier": "T3",
+      "evaluation_case": "T3-6",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "2GVV_T1",
+      "id": "2GVV",
+      "tier": "T1",
+      "evaluation_case": "T1-7",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "3A1C_T2",
+      "id": "3A1C",
+      "tier": "T2",
+      "evaluation_case": "T2-7",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "5XO7_T3",
+      "id": "5XO7",
+      "tier": "T3",
+      "evaluation_case": "T3-7",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "4Z88_T1",
+      "id": "4Z88",
+      "tier": "T1",
+      "evaluation_case": "T1-8",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "3OKC_T2",
+      "id": "3OKC",
+      "tier": "T2",
+      "evaluation_case": "T2-8",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "5UV1_T3",
+      "id": "5UV1",
+      "tier": "T3",
+      "evaluation_case": "T3-8",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "4D4D_T1",
+      "id": "4D4D",
+      "tier": "T1",
+      "evaluation_case": "T1-9",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "4UAU_T2",
+      "id": "4UAU",
+      "tier": "T2",
+      "evaluation_case": "T2-9",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "4LIL_T3",
+      "id": "4LIL",
+      "tier": "T3",
+      "evaluation_case": "T3-9",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "6IRT_T1",
+      "id": "6IRT",
+      "tier": "T1",
+      "evaluation_case": "T1-10",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "5NWH_T2",
+      "id": "5NWH",
+      "tier": "T2",
+      "evaluation_case": "T2-10",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "1SWI_T3",
+      "id": "1SWI",
+      "tier": "T3",
+      "evaluation_case": "T3-10",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "1F9G_T1",
+      "id": "1F9G",
+      "tier": "T1",
+      "evaluation_case": "T1-11",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "6HQ7_T2",
+      "id": "6HQ7",
+      "tier": "T2",
+      "evaluation_case": "T2-11",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "6KNH_T3",
+      "id": "6KNH",
+      "tier": "T3",
+      "evaluation_case": "T3-11",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "3E3C_T1",
+      "id": "3E3C",
+      "tier": "T1",
+      "evaluation_case": "T1-12",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "3R24_T2",
+      "id": "3R24",
+      "tier": "T2",
+      "evaluation_case": "T2-12",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "4B4Q_T3",
+      "id": "4B4Q",
+      "tier": "T3",
+      "evaluation_case": "T3-12",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "5NW7_T1",
+      "id": "5NW7",
+      "tier": "T1",
+      "evaluation_case": "T1-13",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "2VCB_T2",
+      "id": "2VCB",
+      "tier": "T2",
+      "evaluation_case": "T2-13",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "2POQ_T3",
+      "id": "2POQ",
+      "tier": "T3",
+      "evaluation_case": "T3-13",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "4POP_T1",
+      "id": "4POP",
+      "tier": "T1",
+      "evaluation_case": "T1-14",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "5CSD_T2",
+      "id": "5CSD",
+      "tier": "T2",
+      "evaluation_case": "T2-14",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "2YAZ_T3",
+      "id": "2YAZ",
+      "tier": "T3",
+      "evaluation_case": "T3-14",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "3IL5_T1",
+      "id": "3IL5",
+      "tier": "T1",
+      "evaluation_case": "T1-15",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "1P28_T2",
+      "id": "1P28",
+      "tier": "T2",
+      "evaluation_case": "T2-15",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "2LBV_T3",
+      "id": "2LBV",
+      "tier": "T3",
+      "evaluation_case": "T3-15",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "5J4N_T1",
+      "id": "5J4N",
+      "tier": "T1",
+      "evaluation_case": "T1-16",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "5DV4_T2",
+      "id": "5DV4",
+      "tier": "T2",
+      "evaluation_case": "T2-16",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "1UZ4_T3",
+      "id": "1UZ4",
+      "tier": "T3",
+      "evaluation_case": "T3-16",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "5CPR_T1",
+      "id": "5CPR",
+      "tier": "T1",
+      "evaluation_case": "T1-17",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "6B4H_T2",
+      "id": "6B4H",
+      "tier": "T2",
+      "evaluation_case": "T2-17",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "4YMH_T3",
+      "id": "4YMH",
+      "tier": "T3",
+      "evaluation_case": "T3-17",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "4AQ4_T1",
+      "id": "4AQ4",
+      "tier": "T1",
+      "evaluation_case": "T1-18",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "6GDY_T2",
+      "id": "6GDY",
+      "tier": "T2",
+      "evaluation_case": "T2-18",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "4JGV_T3",
+      "id": "4JGV",
+      "tier": "T3",
+      "evaluation_case": "T3-18",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "2QPU_T1",
+      "id": "2QPU",
+      "tier": "T1",
+      "evaluation_case": "T1-19",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "6NAF_T2",
+      "id": "6NAF",
+      "tier": "T2",
+      "evaluation_case": "T2-19",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "2OYM_T3",
+      "id": "2OYM",
+      "tier": "T3",
+      "evaluation_case": "T3-19",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "4Y4V_T1",
+      "id": "4Y4V",
+      "tier": "T1",
+      "evaluation_case": "T1-20",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "6H78_T2",
+      "id": "6H78",
+      "tier": "T2",
+      "evaluation_case": "T2-20",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "4C1Y_T3",
+      "id": "4C1Y",
+      "tier": "T3",
+      "evaluation_case": "T3-20",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "5KDE_T1",
+      "id": "5KDE",
+      "tier": "T1",
+      "evaluation_case": "T1-21",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "1BO5_T2",
+      "id": "1BO5",
+      "tier": "T2",
+      "evaluation_case": "T2-21",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "5OHY_T3",
+      "id": "5OHY",
+      "tier": "T3",
+      "evaluation_case": "T3-21",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "6MI6_T1",
+      "id": "6MI6",
+      "tier": "T1",
+      "evaluation_case": "T1-22",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "1R6N_T2",
+      "id": "1R6N",
+      "tier": "T2",
+      "evaluation_case": "T2-22",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "5HFJ_T3",
+      "id": "5HFJ",
+      "tier": "T3",
+      "evaluation_case": "T3-22",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "2WSX_T1",
+      "id": "2WSX",
+      "tier": "T1",
+      "evaluation_case": "T1-23",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "3HB4_T2",
+      "id": "3HB4",
+      "tier": "T2",
+      "evaluation_case": "T2-23",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "3ZZF_T3",
+      "id": "3ZZF",
+      "tier": "T3",
+      "evaluation_case": "T3-23",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "4CD1_T1",
+      "id": "4CD1",
+      "tier": "T1",
+      "evaluation_case": "T1-24",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "5VQE_T2",
+      "id": "5VQE",
+      "tier": "T2",
+      "evaluation_case": "T2-24",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "1QFT_T3",
+      "id": "1QFT",
+      "tier": "T3",
+      "evaluation_case": "T3-24",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "3NRZ_T1",
+      "id": "3NRZ",
+      "tier": "T1",
+      "evaluation_case": "T1-25",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "5CW8_T2",
+      "id": "5CW8",
+      "tier": "T2",
+      "evaluation_case": "T2-25",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "1SYO_T3",
+      "id": "1SYO",
+      "tier": "T3",
+      "evaluation_case": "T3-25",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "2VMD_T1",
+      "id": "2VMD",
+      "tier": "T1",
+      "evaluation_case": "T1-26",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "5L13_T2",
+      "id": "5L13",
+      "tier": "T2",
+      "evaluation_case": "T2-26",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "2XGS_T3",
+      "id": "2XGS",
+      "tier": "T3",
+      "evaluation_case": "T3-26",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "6TL2_T1",
+      "id": "6TL2",
+      "tier": "T1",
+      "evaluation_case": "T1-27",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "4LH3_T2",
+      "id": "4LH3",
+      "tier": "T2",
+      "evaluation_case": "T2-27",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "2YMT_T3",
+      "id": "2YMT",
+      "tier": "T3",
+      "evaluation_case": "T3-27",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "5B4W_T1",
+      "id": "5B4W",
+      "tier": "T1",
+      "evaluation_case": "T1-28",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "6HK6_T2",
+      "id": "6HK6",
+      "tier": "T2",
+      "evaluation_case": "T2-28",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "6H9X_T3",
+      "id": "6H9X",
+      "tier": "T3",
+      "evaluation_case": "T3-28",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "4CS9_T1",
+      "id": "4CS9",
+      "tier": "T1",
+      "evaluation_case": "T1-29",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "3P2E_T2",
+      "id": "3P2E",
+      "tier": "T2",
+      "evaluation_case": "T2-29",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "6SY7_T3",
+      "id": "6SY7",
+      "tier": "T3",
+      "evaluation_case": "T3-29",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    },
+    {
+      "key": "3AY0_T1",
+      "id": "3AY0",
+      "tier": "T1",
+      "evaluation_case": "T1-30",
+      "n_obs": 10,
+      "n_pred": 10,
+      "dt_ps": 80
+    },
+    {
+      "key": "2VC9_T2",
+      "id": "2VC9",
+      "tier": "T2",
+      "evaluation_case": "T2-30",
+      "n_obs": 80,
+      "n_pred": 20,
+      "dt_ps": 80
+    },
+    {
+      "key": "1NNU_T3",
+      "id": "1NNU",
+      "tier": "T3",
+      "evaluation_case": "T3-30",
+      "n_obs": 20,
+      "n_pred": 80,
+      "dt_ps": 80
+    }
+  ]
+}

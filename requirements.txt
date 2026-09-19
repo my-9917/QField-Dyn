@@ -1,6 +1,9 @@
 --extra-index-url https://download.pytorch.org/whl/cu121
+torch==2.5.1+cu121
 numpy==2.2.6
 scipy==1.15.3
 h5py==3.15.1
-rdkit==2026.3.4
-torch==2.5.1+cu121
+MDAnalysis==2.9.0
+rdkit==2026.03.4
+matplotlib==3.10.9
+pillow==12.3.0

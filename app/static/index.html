@@ -1,0 +1,13 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>QField-Dyn：量子信息增强的蛋白-配体结合轨迹预测</title><link rel="stylesheet" href="/style.css"></head><body>
+<header><a class="brand" href="/">QField-Dyn<span>PROTEIN–LIGAND DYNAMICS</span></a><span class="badge">量子历史 · 轨迹生成</span></header>
+<main><section class="intro"><div class="eyebrow">MOLECULAR DYNAMICS EXPLORER</div><h1>量子信息增强的<br>蛋白-配体结合轨迹预测</h1><p>固定蛋白环境下，生成配体的未来原子坐标序列。</p></section>
+<div class="workspace"><section class="panel input"><div class="section-title"><span>01</span><h2>观测输入</h2></div>
+<form id="form"><label>拓扑结构 <small>PDB · 包含配体 CONECT 键连接</small><input id="pdb" type="file" accept=".pdb" required></label>
+<label>观测轨迹 <small>XTC · 原子顺序与 PDB 一致</small><input id="xtc" type="file" accept=".xtc" required></label>
+<div class="fields"><label>预测档位<select id="tier"><option>T1</option><option>T2</option><option>T3</option><option>T4</option></select></label><label>配体残基名<input id="ligand" value="MOL" maxlength="4" required></label></div>
+<div id="protocol" class="protocol"></div><p class="hint">观测时间从 0 ps 开始；输入包含蛋白、配体及支持的离子。T4 展示长时程生成轨迹。</p>
+<button class="primary" id="submit">开始预测 <span>↗</span></button></form><div id="status" role="status" class="status">等待上传观测数据</div></section>
+<section class="panel viewer"><div class="section-title"><span>02</span><h2>轨迹空间</h2><span class="legend"><i></i>配体 <b></b>蛋白 Cα</span></div><div class="canvas-wrap"><canvas id="scene"></canvas><div id="empty">分子轨迹将在推理完成后显示<br><small>拖动旋转 · 滚轮缩放</small></div><div id="frameLabel"></div></div>
+<div class="controls"><button id="play" disabled>播放</button><input id="frame" type="range" min="0" max="0" value="0" disabled><span id="counter">— / —</span><a id="download" hidden>下载 XTC ↓</a></div></section></div>
+<section class="results"><div class="panel metric"><div class="eyebrow">COMPLETE INFERENCE</div><strong id="seconds">—</strong><span>含模型加载的推理时间 / 秒</span></div><div class="panel chart"><h3>配体质心相对观测末帧的位移 <span>Å</span></h3><svg id="drift" viewBox="0 0 560 105"></svg></div><div class="panel chart"><h3>配体回转半径 <span>Å</span></h3><svg id="radius" viewBox="0 0 560 105"></svg></div></section>
+<footer>QField-Dyn</footer></main><script src="/app.js"></script></body></html>

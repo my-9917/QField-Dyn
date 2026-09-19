@@ -1,0 +1,11 @@
+{
+  "runtime": "runtime",
+  "base": "models/E3.pt",
+  "adapter": "models/epoch_02.pt",
+  "geometry_calibration": "configs/ligand_geometry_calibration_v1.json",
+  "phys_calibration": "configs/phys_calibration.json",
+  "gpu": 0,
+  "jobs": "jobs",
+  "model_label": "QField-Dyn",
+  "model_status": "goai-finals-2026"
+}

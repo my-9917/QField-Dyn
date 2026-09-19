@@ -1,2 +1,0 @@
--r requirements.txt
-MDAnalysis==2.9.0

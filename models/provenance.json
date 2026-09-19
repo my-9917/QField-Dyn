@@ -1,0 +1,12 @@
+{
+  "original": {
+    "base_sha256": "68b477c71e2207c073595fe1c354cd8699217d044500a0b60e34a84fd72961d3",
+    "adapter_sha256": "9bc7f02640d92edb699fe18de6b6c61573e3c9e3352630c7b0b064793bcf1a5f"
+  },
+  "exported": {
+    "base_sha256": "cc88c35d54510f5a6e19321ec87d374f7b7b00bbc03f02b0d8a6850ac25963f7",
+    "adapter_sha256": "cbd20f667e18c1125c880d89e6554638c7c40dadd1680b24539d31f3d66e5287"
+  },
+  "tensors_bitwise_equal": true,
+  "format": "inference tensors and constructor specs; training snapshots retained separately"
+}

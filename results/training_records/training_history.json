@@ -1,0 +1,117 @@
+{
+  "stopping_rule": "three scheduled epochs",
+  "converged": false,
+  "epochs": [
+    {
+      "epoch": 1,
+      "statistics": {
+        "epoch": 2,
+        "updates": 1984,
+        "training_cfm": 3.154602299032073,
+        "training_total": 3.192587182925005,
+        "validation_cfm": 4.853841856044407,
+        "epoch_seconds": 11853.755834480282,
+        "total_seconds": 11853.805617813952,
+        "learning_rate": 0.0001,
+        "clipping": {
+          "updates": 1536,
+          "activated_fraction": 0.94921875,
+          "coefficient_minimum": 0.00019132758914579775,
+          "coefficient_median": 0.40687476731617056,
+          "coefficient_p05": 0.05021129615781282,
+          "fraction_below_0_1": 0.08203125,
+          "source": "global gradient norm after DDP averaging, before clipping; PyTorch norm + 1e-6"
+        },
+        "aligned": {
+          "auxiliary_updates": 96,
+          "rollout_steps": 32,
+          "paths": 2,
+          "weights": {
+            "rollout_physics": 0.27111180649834943,
+            "coordinate_es": 0.9213647075191707
+          },
+          "endpoint_weight_last": 0.0,
+          "initial_optimizer": "restored complete aligned epoch",
+          "rollout_prefixes": 384,
+          "cfm_prefixes": 6144,
+          "complete_cfm_prefix_coverage": true,
+          "complete_rollout_prefix_coverage": false
+        }
+      }
+    },
+    {
+      "epoch": 2,
+      "statistics": {
+        "epoch": 3,
+        "updates": 3520,
+        "training_cfm": 3.008786076975715,
+        "training_total": 3.0440108390976093,
+        "validation_cfm": 4.823947660702591,
+        "epoch_seconds": 11601.905102250166,
+        "total_seconds": 11601.916389440652,
+        "learning_rate": 0.0001,
+        "clipping": {
+          "updates": 1536,
+          "activated_fraction": 0.947265625,
+          "coefficient_minimum": 0.00010426476714041901,
+          "coefficient_median": 0.41930577388840223,
+          "coefficient_p05": 0.05463516010288281,
+          "fraction_below_0_1": 0.083984375,
+          "source": "global gradient norm after DDP averaging, before clipping; PyTorch norm + 1e-6"
+        },
+        "aligned": {
+          "auxiliary_updates": 96,
+          "rollout_steps": 32,
+          "paths": 2,
+          "weights": {
+            "rollout_physics": 0.27111180649834943,
+            "coordinate_es": 0.9213647075191707
+          },
+          "endpoint_weight_last": 0.0,
+          "initial_optimizer": "restored complete aligned epoch",
+          "rollout_prefixes": 384,
+          "cfm_prefixes": 6144,
+          "complete_cfm_prefix_coverage": true,
+          "complete_rollout_prefix_coverage": false
+        }
+      }
+    },
+    {
+      "epoch": 3,
+      "statistics": {
+        "epoch": 4,
+        "updates": 5056,
+        "training_cfm": 2.750035350950687,
+        "training_total": 2.791202292809127,
+        "validation_cfm": 4.351812778467623,
+        "epoch_seconds": 11641.974717295729,
+        "total_seconds": 11641.98780975584,
+        "learning_rate": 3e-05,
+        "clipping": {
+          "updates": 1536,
+          "activated_fraction": 0.9205729166666666,
+          "coefficient_minimum": 0.000917011473725347,
+          "coefficient_median": 0.4732857037727815,
+          "coefficient_p05": 0.048996182653685307,
+          "fraction_below_0_1": 0.080078125,
+          "source": "global gradient norm after DDP averaging, before clipping; PyTorch norm + 1e-6"
+        },
+        "aligned": {
+          "auxiliary_updates": 96,
+          "rollout_steps": 32,
+          "paths": 2,
+          "weights": {
+            "rollout_physics": 0.27111180649834943,
+            "coordinate_es": 0.9213647075191707
+          },
+          "endpoint_weight_last": 0.0,
+          "initial_optimizer": "restored complete aligned epoch",
+          "rollout_prefixes": 384,
+          "cfm_prefixes": 6144,
+          "complete_cfm_prefix_coverage": true,
+          "complete_rollout_prefix_coverage": false
+        }
+      }
+    }
+  ]
+}

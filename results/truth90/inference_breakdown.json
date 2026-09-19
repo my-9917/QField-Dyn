@@ -1,0 +1,92 @@
+{
+  "T1": {
+    "cases": 30,
+    "generation_seconds": 13.6867212863639,
+    "stage_seconds": {
+      "flow_seconds": 12.86915377904661,
+      "adapter_seconds": 0.5305697713512927,
+      "encoding_seconds": 0.049778052140027285,
+      "conditioning_seconds": 0.21782928716080885
+    },
+    "stage_percent": {
+      "flow_seconds": 94.02656421350646,
+      "adapter_seconds": 3.8765293765417734,
+      "encoding_seconds": 0.3636959582834585,
+      "conditioning_seconds": 1.5915373930923287
+    }
+  },
+  "T2": {
+    "cases": 30,
+    "generation_seconds": 21.95848065377213,
+    "stage_seconds": {
+      "flow_seconds": 20.455249478667973,
+      "adapter_seconds": 0.527630768235152,
+      "encoding_seconds": 0.07244164125683407,
+      "conditioning_seconds": 0.8856557083626588
+    },
+    "stage_percent": {
+      "flow_seconds": 93.15421135548408,
+      "adapter_seconds": 2.4028564478322094,
+      "encoding_seconds": 0.3299027942736544,
+      "conditioning_seconds": 4.033319619545338
+    }
+  },
+  "T3": {
+    "cases": 30,
+    "generation_seconds": 78.4863733881774,
+    "stage_seconds": {
+      "flow_seconds": 77.28316527513476,
+      "adapter_seconds": 0.615173026608924,
+      "encoding_seconds": 0.3042831952683628,
+      "conditioning_seconds": 0.2711147986042003
+    },
+    "stage_percent": {
+      "flow_seconds": 98.46698469925242,
+      "adapter_seconds": 0.7837959636208508,
+      "encoding_seconds": 0.3876892027657348,
+      "conditioning_seconds": 0.3454291323454614
+    }
+  },
+  "all": {
+    "cases": 90,
+    "generation_seconds": 38.043858442771146,
+    "stage_seconds": {
+      "flow_seconds": 36.86918951094978,
+      "adapter_seconds": 0.5577911887317896,
+      "encoding_seconds": 0.1421676295550747,
+      "conditioning_seconds": 0.4581999313758893
+    },
+    "stage_percent": {
+      "flow_seconds": 96.91232966396296,
+      "adapter_seconds": 1.4661793297619041,
+      "encoding_seconds": 0.3736940346598532,
+      "conditioning_seconds": 1.2043992122017622
+    }
+  },
+  "accepted_steps": {
+    "64": 89,
+    "256": 1
+  },
+  "qmem_velocity_calls_common_case": 384,
+  "quantum_condition_reused_during_integration": true,
+  "neuralmd_forward_calls_measured": {
+    "T1": {
+      "case": "6RQK_T1",
+      "calls": 1
+    },
+    "T2": {
+      "case": "1FHR_T2",
+      "calls": 2
+    },
+    "T3": {
+      "case": "5O7E_T3",
+      "calls": 8
+    }
+  },
+  "neuralmd_author_hyperparameters": {
+    "NeuralMD_step_size": 10,
+    "NeuralMD_scaling": 100,
+    "ODE_method": "euler"
+  },
+  "timing_scope": "90-case measured generation under concurrent GPU load; exact replay excluded"
+}

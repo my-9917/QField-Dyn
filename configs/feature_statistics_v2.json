@@ -1,0 +1,27 @@
+{
+  "version": "semiflexible_ligand_scores_v1",
+  "features": [
+    "ligand_relative_displacement",
+    "ligand_gyration",
+    "pocket_contact_strength"
+  ],
+  "mean": [
+    1.725490491354513,
+    4.45176788914022,
+    0.6057716217685313
+  ],
+  "scale": [
+    3.2310405818499617,
+    1.32105088560654,
+    0.07110926397670567
+  ],
+  "partition": "train",
+  "prefixes": 1536,
+  "defined_prefixes_per_feature": [
+    1536,
+    1536,
+    1520
+  ],
+  "source_cache": "512-system native training subset, 1536 T1/T2/T3 prefixes",
+  "weighting": "equal prefix mass; native train only"
+}

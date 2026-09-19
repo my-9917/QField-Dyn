@@ -1,0 +1,30 @@
+{
+  "completed": true,
+  "partition": "train",
+  "version": "native_geometry_calibration_v1",
+  "margins": {
+    "protein_bond": 0.024409154202987286,
+    "ligand_bond": 0.026517579887780605,
+    "protein_angle": 0.09260280483939964,
+    "ligand_angle": 0.08755329256703526
+  },
+  "coverage_quantile": 0.995,
+  "training_coverage": {
+    "protein_bond": 0.995000007699197,
+    "ligand_bond": 0.9950051490738911,
+    "protein_angle": 0.9950000077322425,
+    "ligand_angle": 0.9950034842406814
+  },
+  "config": {
+    "version": "native_geometry_calibration_v1",
+    "train_cache": "results/translation_targets_train_v1",
+    "validation_cache": "results/translation_targets_validation_v1",
+    "output": "results/native_geometry_calibration_v1",
+    "coverage_quantile": 0.995,
+    "weighting": "equal training prefix mass within each protein/ligand and bond/angle group",
+    "reference": "observed per-bond and per-angle interval extended by train-only excursion quantiles",
+    "bond_units": "fraction of each observed bond interval midpoint",
+    "angle_units": "radians",
+    "scope": "geometric plausibility; source-derived range rather than force-field energy"
+  }
+}
