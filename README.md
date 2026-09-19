@@ -62,6 +62,8 @@ QField-Dyn的运动幅度误差与受检几何结果优于此次NeuralMD迁移�
 
 [完整结果](results/truth90/完整结果与交付.md) · [分档结果](results/truth90/results.md) · [评价定义](docs/evaluation.md) · [训练设置](docs/training.md)
 
+[决赛研究报告（PDF）](docs/finals_report.pdf)
+
 ## 代码结构
 
 | 目录 | 内容 |
