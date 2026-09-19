@@ -93,7 +93,7 @@ def main():
         chart.set_xlabel('Prediction lead time (ns)', fontsize=9); chart.set_ylabel('RMSD (Å)', fontsize=9)
         chart.tick_params(labelsize=8); chart.legend(loc='upper left', fontsize=8, frameon=False, ncol=2)
         fig.text(.5, .042, 'Common ligand heavy atoms • Gray: fixed pocket • Dashed: last observation • Same fixed camera and scale', ha='center', fontsize=8)
-        fig.text(.5, .017, selection['caption'] + ' QField-Dyn E3 + Adapter E2; NeuralMD author-pretrained transfer.', ha='center', fontsize=7.5)
+        fig.text(.5, .017, selection['caption'] + ' QField-Dyn; NeuralMD author-pretrained transfer.', ha='center', fontsize=7.5)
 
         def update(frame):
             clock.set_text(f'Frame {frame + 1}/{n}     Absolute time {absolute[frame]:.3f} ns     Lead {lead[frame]:.3f} ns')
