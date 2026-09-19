@@ -2,6 +2,12 @@
 
 上传PDB拓扑与观测XTC，选择T1–T4档位并填写配体残基名，即可调用模型生成轨迹。界面支持任务状态、轨迹旋转、缩放、播放、运动曲线和预测XTC下载。
 
+## 在线访问
+
+演示入口：[QField-Dyn 在线推理](https://environment-gadgets-estimated-hint.trycloudflare.com/)。访问者通过浏览器上传输入，服务器执行模型推理，结果支持播放和XTC下载。
+
+该入口由服务器提供HTTPS连接，访问者无需配置SSH，也无需保持开发者电脑在线。当前采用临时分享地址，有效期取决于演示服务器和入口进程的运行状态；重新启动入口进程后地址会变化。长期部署可使用固定域名和命名隧道。
+
 ## 部署
 
 在Linux CUDA服务器安装仓库依赖并从仓库根目录运行：
@@ -18,6 +24,14 @@ ssh -N -L 8787:127.0.0.1:8787 YOUR_SERVER
 ```
 
 随后访问`http://127.0.0.1:8787/`。复制示例配置为`configs/portal.local.json`可指定模型、运行目录、GPU与任务保存路径。
+
+外部演示访问可在运行HTTP服务的同一服务器启动Cloudflare Tunnel：
+
+```bash
+cloudflared tunnel --no-autoupdate --protocol http2 --url http://127.0.0.1:8787
+```
+
+分享命令输出的HTTPS地址。HTTP服务继续监听回环地址，隧道将HTTPS请求转发给该服务。正式长期部署采用固定域名并按使用规模配置访问权限与并发资源。
 
 ## 输入与输出
 

@@ -1,4 +1,4 @@
-"""Private upload and inference service; bind to loopback and use an SSH tunnel."""
+"""Upload and inference service behind an SSH or HTTPS reverse tunnel."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
