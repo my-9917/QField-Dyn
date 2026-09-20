@@ -37,7 +37,7 @@ PDB与XTC原子顺序一致，元素和配体CONECT连接完整。观测从0 ps�
 CUDA_VISIBLE_DEVICES=0 bash run.sh /absolute/path/observations outputs/example
 ```
 
-输出按`T1/<id>_pred.xtc`至`T4/<id>_pred.xtc`组织，生成证据保存在`outputs/reproduction/`，检查汇总为`reproduction_verification.json`。`--verify-replay`会额外执行一次相同随机种子的完整生成。完整生成时间与重放时间分别记录。
+输出按`T1/<id>_pred.xtc`至`T4/<id>_pred.xtc`组织，生成证据保存在`outputs/reproduction/`，导出清单为`reproduction_manifest.json`。默认入口执行一次生成并导出；额外使用`--verify-replay`会再执行一次相同随机种子的完整生成。完整生成时间与重放时间分别记录。
 
 赛事包支持无参数运行`bash run.sh`：默认输入为`GOAI_eval_public/`，默认输出为相邻的`../GOAI_pred_xxxxxm429/`。默认Python为`.venv/bin/python`，可通过`PYTHON`环境变量指定环境。
 
@@ -49,7 +49,7 @@ CUDA_VISIBLE_DEVICES=0 python runtime/predict_trajectory_adapter.py \
   --geometry-calibration configs/ligand_geometry_calibration_v1.json \
   --t4-geometry-calibration configs/phys_calibration.json \
   --public-root /absolute/path/observations --case example \
-  --output outputs/example --seed 2026091101 --verify-replay
+  --output outputs/example --seed 2026091101
 ```
 
 90例有真值实验使用单独登记的评价种子`2026091407`，见`results/truth90/manifest.json`。改变种子属于不同的随机生成样本。

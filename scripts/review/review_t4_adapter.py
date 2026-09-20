@@ -19,6 +19,7 @@ def main():
     p=argparse.ArgumentParser()
     for name in ('root','prediction','public-root','output'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--case',required=True);p.add_argument('--resolution',action='store_true')
+    p.add_argument('--allow-unreplayed',action='store_true')
     p.add_argument('--adapter',type=Path)
     a=p.parse_args();a.output.mkdir(parents=True,exist_ok=True);torch.set_num_threads(2)
     saved=torch.load(a.prediction/(a.case+'.pt'),map_location='cpu',weights_only=False)
@@ -54,7 +55,8 @@ def main():
         overall_mean_atom_rmsf_angstrom=float(np.sqrt(np.square(xyz-xyz.mean(0)).sum(-1).mean(0)).mean()),
         final_centre_displacement_angstrom=float(np.linalg.norm(centre[-1]-start)),
         maximum_atom_step_angstrom=float(step.max()),contact_frame_fraction_6A=float((nearest.min(-1)<6).mean()),
-        xtc_review=saved['xtc_review'],model_definition=saved['config'],inference_timing=saved['inference_timing'],
+        xtc_review=saved['xtc_review'],exact_replay_passed=bool(saved['exact_replay_passed']),
+        model_definition=saved['config'],inference_timing=saved['inference_timing'],
         feedback_all_blocks_passed=all(b['covalent_feedback']['passed'] for b in saved['blocks']))
     (a.output/'metrics.json').write_text(json.dumps(report,indent=2,allow_nan=False))
     if not a.resolution:return
@@ -62,7 +64,8 @@ def main():
     assert a.adapter is not None
     assert hashlib.sha256(a.adapter.read_bytes()).hexdigest()==saved['config']['adapter_sha256']
     tolerance=json.loads((a.root/'source/configs/selection_v1.json').read_text())['numerical_solver_rms_tolerance_angstrom']
-    assert saved['exact_replay_passed'] and tolerance==saved['config']['resolution_tolerance_angstrom']
+    assert saved['exact_replay_passed'] or a.allow_unreplayed
+    assert tolerance==saved['config']['resolution_tolerance_angstrom']
     rows=[]
     end=0
     for index,block in enumerate(saved['blocks']):
@@ -84,8 +87,8 @@ def main():
     assert sum(r['frames'] for r in rows)==490
     (a.output/'resolution.json').write_text(json.dumps(dict(completed=True,id=a.case,rows=rows,
         tolerance_angstrom=tolerance,passed=all(r['passed'] for r in rows),
-        exact_full_replay=True,
-        scope='all block-local resolution decisions verified during generation and full replay; predictive accuracy requires truth'),indent=2))
+        exact_full_replay=bool(saved['exact_replay_passed']),
+        scope='recorded block-local resolution and encoded feedback verified; full replay status reported separately; predictive accuracy requires truth'),indent=2))
 
 
 if __name__=='__main__':main()

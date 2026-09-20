@@ -17,9 +17,11 @@ QField-Dyn在固定蛋白与离子环境中，根据观测轨迹、分子拓扑�
 
 T4的长期未来准确性需要匹配真值验证。输出XTC包含输入体系的全部原子，蛋白和离子固定在最后观测参考结构，配体坐标随时间变化。
 
-## 安装与运行
+## 安装
 
 Linux、Python 3.10、CUDA环境；实际验证设备为NVIDIA A800。依赖版本记录在`requirements-lock.txt`。
+
+提交包解压后进入`GOAI_repro_xxxxxm429/`，从创建Python环境开始执行以下安装步骤。通过Git获取源码时，先执行前三行。
 
 ```bash
 git clone https://github.com/my-9917/QField-Dyn.git
@@ -28,13 +30,37 @@ git checkout goai-finals-2026
 python3.10 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python tools/build_runtime.py --output runtime
-CUDA_VISIBLE_DEVICES=0 bash run.sh /path/to/observations outputs/predictions
 ```
 
 `models/E3.pt`和`models/epoch_02.pt`随仓库提供。输入采用PDB、观测XTC和任务元数据，格式见[输入与推理](docs/inference.md)。预测读取观测段；未来真值只进入评价。
 
-赛事复现支持直接运行`bash run.sh`：输入放在仓库根目录的`GOAI_eval_public/`，输出写入相邻的`GOAI_pred_xxxxxm429/T1`至`T4`目录，文件名为`<case>_pred.xtc`。`reproduction_verification.json`记录帧数、原子数、时间、模型身份与精确重放结果。`PYTHON`环境变量可指定已有的Python环境。
+## 方法
+
+模型根据观测结构与轨迹构建共享结构表示，将历史信息写入六比特量子状态，通过三层结构条件化重上传线路读出，再由条件轨迹流生成未来配体坐标。几何适配器与共价求解处理分子内部结构；蛋白和离子保持在观测参考结构。T4按区块生成，并将实际写出的坐标反馈至后续区块。
+
+训练目标、模块接口与Geo/Phys/Dyn/Stab定义分别见[训练设置](docs/training.md)、[模型结构](docs/architecture.md)和[评价定义](docs/evaluation.md)。
+
+## 运行
+
+安装完成后，可显式指定输入目录和预测输出目录：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 bash run.sh /path/to/GOAI_eval_public /path/to/GOAI_pred_xxxxxm429
+```
+
+入口自动准备运行模块、加载随包权重并按赛事目录格式导出XTC。默认执行一次生成并导出轨迹；额外重放与评价独立执行。`PYTHON`环境变量可指定已有的Python解释器，默认使用项目的`.venv/bin/python`。
+
+## 复现说明
+
+将组委会输入目录`GOAI_eval_public/`放入`GOAI_repro_xxxxxm429/`，其中包含`protocol.json`及各档输入文件；随后在复现目录执行：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 bash run.sh
+```
+
+该入口覆盖T1/T2/T3各30例与T4五例。结果写入相邻的`GOAI_pred_xxxxxm429/T1`至`T4`，文件名为`<case>_pred.xtc`；中间产物保存在`outputs/reproduction/`。`reproduction_manifest.json`记录逐例导出文件，`additional_validation_performed=false`表示导出阶段只复制生成文件。生成配置、模型身份及已有检查记录随中间产物保存。公开95例用于赛事交付；报告中的90个有真值验证案例及名单单独保存在`results/truth90/`。
+
+## Web界面
 
 启动上传、推理、播放和下载页面：
 

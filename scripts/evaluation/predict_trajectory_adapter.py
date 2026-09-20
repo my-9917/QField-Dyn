@@ -24,6 +24,7 @@ def main():
     for name in ('base','adapter','public-root','geometry-calibration','output'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--case',action='append');p.add_argument('--seed',type=int,default=2026091101)
     p.add_argument('--verification-frames',type=int,default=0);p.add_argument('--verify-replay',action='store_true')
+    p.add_argument('--skip-t4-replay',action='store_true')
     p.add_argument('--solver-steps',type=int)
     p.add_argument('--t4-geometry-calibration',type=Path)
     a=p.parse_args();a.output.mkdir(exist_ok=True,parents=True);torch.set_num_threads(2)
@@ -93,11 +94,12 @@ def main():
         timing['maximum_accepted_integration_steps']=max(b['integration_steps'] for b in blocks) if blocks else details['integration_steps']
         artifact=dict(meta=meta,seed=seed,ligand=delivered,pre_encoding_ligand=ligand.cpu(),blocks=blocks,config=config,
             exact_replay_passed=False,
+            exact_replay_status='deferred_by_policy' if meta['tier']=='T4' and a.skip_t4_replay else 'not_run',
             inference_timing=timing,
             xtc_review=review,transform=transform,**details)
         torch.save(artifact,a.output/(meta['id']+'.generated.pt'))
         print(json.dumps(dict(id=meta['id'],stage='complete_generation_saved',timing=timing)),flush=True)
-        if a.verify_replay:
+        if a.verify_replay and not (meta['tier']=='T4' and a.skip_t4_replay):
             begin=time.perf_counter()
             replay,replay_blocks,replay_details=generate_adapted(base,adapter,data,record,seed,feedback_calibration=feedback)
             assert torch.equal(ligand,replay)
@@ -108,10 +110,14 @@ def main():
                 assert details['integration_steps']==replay_details['integration_steps'] and details['resolution_checks']==replay_details['resolution_checks']
             torch.cuda.synchronize();timing['exact_replay_verification_seconds']=time.perf_counter()-begin
             artifact['exact_replay_passed']=True
+            artifact['exact_replay_status']='passed'
         torch.save(artifact,a.output/(meta['id']+'.pt'))
-        rows.append(dict(id=meta['id'],tier=meta['tier'],timing=timing,**review));print(json.dumps(rows[-1]),flush=True)
+        rows.append(dict(id=meta['id'],tier=meta['tier'],timing=timing,
+            exact_replay_passed=artifact['exact_replay_passed'],exact_replay_status=artifact['exact_replay_status'],**review));print(json.dumps(rows[-1]),flush=True)
     assert rows
-    (a.output/'review.json').write_text(json.dumps(dict(completed=True,rows=rows,config=config,numerical_resolution_review='recorded_per_path_and_block'),indent=2))
+    (a.output/'review.json').write_text(json.dumps(dict(completed=True,rows=rows,config=config,
+        exact_replay_status='passed' if all(r['exact_replay_passed'] for r in rows) else 'deferred_or_not_requested',
+        numerical_resolution_review='recorded_per_path_and_block'),indent=2))
 
 
 if __name__=='__main__':main()

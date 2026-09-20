@@ -5,7 +5,7 @@ from scipy.optimize import minimize
 import torch
 from covalent_output_constraints import values_jacobian
 
-VERSION='converged_covalent_sqp_0920_r3'
+VERSION='uniform_covalent_objective_0920_r4'
 
 
 @torch.no_grad()

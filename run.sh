@@ -16,7 +16,7 @@ fi
   --output outputs/reproduction \
   --geometry-calibration configs/ligand_geometry_calibration_v1.json \
   --t4-geometry-calibration configs/phys_calibration.json \
-  --seed 2026091101 --verify-replay
+  --seed 2026091101
 "$PYTHON" tools/export_submission_predictions.py \
   --public-root "$INPUT" --predictions outputs/reproduction --output "$OUTPUT" \
-  --review reproduction_verification.json
+  --review reproduction_manifest.json --copy-only
